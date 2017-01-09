@@ -1,0 +1,48 @@
+/* Empty. Add your own CSS if you like */
+
+.tabs-striped .tabs{
+	border: none;
+}
+
+.main{
+	background: #f1f1f1;
+}
+
+.financeiro-wrapper{
+
+}
+
+.financeiro-wrapper .financeiro-data{
+	padding: 40px 10px;
+	background: #ef473a;
+	text-align: center;
+}
+
+.financeiro-wrapper .financeiro-data h1,
+.financeiro-wrapper .financeiro-data h3{
+	color: white
+}
+
+.financeiro-wrapper .list .item{
+	box-sizing: border-box;
+}
+
+.item:nth-child(odd){
+	border-right: 5px solid #ef473a;
+}
+
+.item:nth-child(even){
+	border-right: 5px solid #33cd5f;
+}
+
+.financeiro-period{
+	text-align: left;
+	margin: 25px 0 -15px 12px;
+
+}
+
+.cardMargin{
+	padding: 0;
+	border-radius: 2px;
+	margin: 20px 10px;
+}
