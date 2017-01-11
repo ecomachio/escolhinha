@@ -1,6 +1,16 @@
 angular.module('starter.controllers', [])
 
-.controller('CadastroController', function($scope) {})
+.controller('CadastroController', function($scope) {
+  console.log("CadastroController");
+
+  const dbAluno = firebase.database().ref().child('aluno');
+
+  dbAluno.on('value', function(snapshot) {
+    console.log(snapshot.val());
+  });
+
+
+})
 
 .controller('FotosController', function($scope, Locales,$ionicFilterBar) {
         //$scope.$on('$ionicView.enter', function(e) {
@@ -152,6 +162,57 @@ angular.module('starter.controllers', [])
 })
 
 .controller('FavoritosController', function($scope) {})
+
+.controller('LoginController', function($scope, $state) {
+
+  $scope.login = function(user){
+
+    var email = "";
+    var password = "";
+
+    email = user.email;
+    password = user.password;
+
+    console.log(email);
+    console.log(password);
+
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+
+      var errorCode = error.code;
+      var errorMessage = error.message;
+
+      console.log(errorCode);
+
+    });
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        $state.go('tab.cadastro');
+      }
+    });
+  }
+
+  $scope.signUp = function(user){
+
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      // ...
+    });
+  }
+
+  $scope.signOut = function(){
+    firebase.auth().signOut().then(function() {
+      console.log("Sign-out successful");
+    }, function(error) {
+      console.log("An error happened");
+    });
+  }
+
+})
 
 .controller('AjustesController', function($scope) {
         $scope.settings = {

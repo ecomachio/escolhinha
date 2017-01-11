@@ -87,9 +87,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 controller: 'AjustesController'
             }
         }
+  })
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'LoginController'
   });
-
   /*Si ninguno de los siguientes estados esta activo reenviar a /tab/cadastro */
-  $urlRouterProvider.otherwise('/tab/cadastro');
+  $urlRouterProvider.otherwise('/login');
 
 });
