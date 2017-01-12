@@ -27,11 +27,11 @@
 	box-sizing: border-box;
 }
 
-.item:nth-child(odd){
+.financeiro-wrapper .item:nth-child(odd){
 	border-right: 5px solid #ef473a;
 }
 
-.item:nth-child(even){
+.financeiro-wrapper .item:nth-child(even){
 	border-right: 5px solid #33cd5f;
 }
 
@@ -45,4 +45,60 @@
 	padding: 0;
 	border-radius: 2px;
 	margin: 20px 10px;
+}
+
+.loginWrapper{
+	background: #f1f1f1;
+	position: relative;
+	height: 100vh;
+	width: 100%;
+}
+
+.loginTitle{
+	margin: -32% 0 0 0;
+}
+
+.loginTitle h1{
+	color: white;
+
+	text-shadow: 2px 2px 2px #141414;
+	padding: 25px 0 0 0;
+	text-align: center;
+	z-index: 999;
+	filter: brightness(100%);
+}
+
+.loginTitle .loginLine{
+	width: 25%;
+	margin: 0 auto;
+	border-bottom: solid 2pt #878787;
+	display: none;
+
+}
+
+.input-label{
+	width: 20%;
+}
+
+.loginInfWrapper .list .item:nth-child(1){
+	padding-top: 20px;
+}
+
+.loginInfWrapper .list .item:nth-child(2){
+	padding-bottom: 20px;
+}
+
+.author{
+	position: absolute;
+	text-align: center;
+	bottom: 10px;
+	width: 100%;
+	color: #aaa;
+}
+
+.imageLogin{
+	height: 50vh;
+	filter: brightness(115%);
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("../img/imageLogin2.jpg");
+	background-size: cover;
 }
