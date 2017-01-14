@@ -1,47 +1,12 @@
-<ion-view view-title="Cadastro">
+<ion-view view-title="Cadastro" ng-init="loadAlunos()">
   <ion-content class="cadastro-wrapper">
     <div class="list card">
-      <a class="item item-avatar" href="#">
+      <a class="item item-avatar" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos">
          <img src="img\max.png">
-         <h2>Joao</h2>
-         <p>Pedro Oliveira, Vô.</p>
-      </a>
-      <a class="item item-avatar" href="#">
-         <img src="img\mike.png">
-         <h2>Joao</h2>
-         <p>Mariana Fernandez, Mãe.</p>
-      </a>
-      <a class="item item-avatar" href="#">
-         <img src="img\adam.jpg">
-         <h2>Joao</h2>
-         <p>Hélio da silva, Pai</p>
-      </a>
-      <a class="item item-avatar" href="#">
-         <img src="img\perry.png">
-         <h2>Joao</h2>
-         <p>Joana Leite</p>
-      </a>
-      <a class="item item-avatar" href="#">
-         <img src="img\max.png">
-         <h2>Joao</h2>
-         <p>Pedro Oliveira, Vô.</p>
-      </a>
-      <a class="item item-avatar" href="#">
-         <img src="img\mike.png">
-         <h2>Joao</h2>
-         <p>Mariana Fernandez, Mãe.</p>
-      </a>
-      <a class="item item-avatar" href="#">
-         <img src="img\adam.jpg">
-         <h2>Joao</h2>
-         <p>Hélio da silva, Pai</p>
-      </a>
-      <a class="item item-avatar" href="#">
-         <img src="img\perry.png">
-         <h2>Joao</h2>
-         <p>Joana Leite</p>
+         <h2>{{aluno.nome}}</h2>
+         <p>{{aluno.responsavel}}</p>
       </a>
     </div>
-    <a class="cardMargin button button-block button-balanced">Adicionar aluno</button>
+    <a class="cardMargin button button-block button-balanced" ng-click="openAdd()">Adicionar aluno</a>
   </ion-content>
 </ion-view>

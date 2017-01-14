@@ -1,14 +1,139 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['firebase'])
 
-.controller('CadastroController', function($scope) {
+.controller('CadastroController', function($scope, $ionicModal, $ionicLoading, $firebaseObject, $firebaseArray, alunoService, periodoService) {
   console.log("CadastroController");
-
-  const dbAluno = firebase.database().ref().child('aluno');
-
-  dbAluno.on('value', function(snapshot) {
-    console.log(snapshot.val());
+  $ionicModal.fromTemplateUrl('templates/kid.html', {
+    scope: $scope
+  }).then(function(modalKid) {
+    $scope.modalKid = modalKid;
   });
 
+  $ionicModal.fromTemplateUrl('templates/add.html', {
+    scope: $scope
+  }).then(function(modalAdd) {
+    $scope.modalAdd = modalAdd;
+  });
+
+  $scope.loadAlunos = function loadAlunos() {
+    $ionicLoading.show();
+    alunoService.loadAlunos().$loaded().then(function(){
+      $scope.alunos = alunoService.loadAlunos();
+      loadPeriod();
+      $ionicLoading.hide();
+    })
+
+  }
+
+  function loadPeriod() {
+
+    var periodosRef = firebase.database().ref().child('periodo');
+    periodos = $firebaseArray(periodosRef);
+
+    periodos.$loaded().then(function() {
+      checkNewPeriod(periodos);
+
+      $scope.periodos = [];
+
+      for (var i = 0; i < periodos.length; i++) {
+        var per = {
+          mes: periodos[i].periodo.substring(0,1),
+          ano: periodos[i].periodo.substring(2,6)
+        }
+        $scope.periodos.push(per);
+      }
+
+      $scope.periodos = periodoService.converteMes($scope.periodos);
+    })
+
+  }
+
+  function checkNewPeriod(periodos) {
+    var d = new Date();
+    var mes = d.getMonth();
+    var ano = d.getFullYear();
+    var flagJaExistePer;
+    if(mes < 10){
+      mes = "0" + mes;
+    }
+
+    var per = mes.toString() + ano.toString();
+    console.log(periodos);
+
+    // periodo ainda nao existe
+    for (var i = 0; i < periodos.length; i++) {
+      if(periodos[i].periodo == per)
+        flagJaExistePer = true;
+    }
+
+    if(!flagJaExistePer){
+      periodos.$add({
+        periodo: per
+      }).then(function(){
+
+      })
+    }
+  }
+
+  $scope.openKid = function(aluno){
+
+    $scope.aluno = aluno;
+    console.log($scope.aluno);
+
+    $scope.modalKid.show();
+  }
+
+  $scope.openAdd = function(){
+    $scope.modalAdd.show();
+  }
+})
+
+.controller('kidController', function($scope, $state) {
+  console.log('kidController');
+
+  $scope.closeKid = function(){
+    $scope.modalKid.hide();
+  }
+
+})
+
+.controller('addController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray) {
+
+  $scope.add = function(aluno){
+
+    $ionicLoading.show();
+
+    var ref = firebase.database().ref().child('aluno');
+    alunos = $firebaseArray(ref);
+
+    console.log(alunos);
+
+    alunos.$add({
+      nome: aluno.nome,
+      idade: aluno.idade,
+      responsavel: aluno.responsavel,
+      email: aluno.email,
+      dataNascimento: "31/12/9999",
+      mensalidade: {
+        periodo: periodo,
+        pago: false
+      }
+    }).then(function(ref){
+      console.log("aluno adicionado");
+      aluno.nome = "";
+      aluno.idade = "";
+      aluno.responsavel = "";
+      aluno.email = "";
+      aluno.dataNascimento = "";
+      $ionicLoading.hide();
+    }).catch(function(error){
+      console.log(error);
+    });
+
+  }
+
+  $scope.closeAdd = function(){
+    $scope.modalAdd.hide();
+  }
 
 })
 
@@ -32,58 +157,36 @@ angular.module('starter.controllers', [])
   })
 })
 
-.controller('FotosController', function($scope, Locales,$ionicFilterBar) {
-        //$scope.$on('$ionicView.enter', function(e) {
-        //});
+.controller('FotosController', function($scope, $ionicLoading, $firebaseObject, $firebaseArray, $ionicLoading, alunoService) {
 
-        $scope.locales = Locales.all();
-        $scope.remove = function(local) {
-            Locales.remove(local);
-        };
-
-        $scope.favorito = function(local){
-
-        };
-
-        $scope.showFilterBar = function () {
-            filterBarInstance = $ionicFilterBar.show({
-                items: $scope.locales,
-                update: function (filteredItems, filterText) {
-                    $scope.locales = filteredItems;
-                    if (filterText) {
-                        console.log(filterText);
-                    }
-                }
-            });
-        };
-
-})
-
-.controller('AlbunesController', function($scope, $stateParams, Locales) {
-        var local_id = $stateParams.fotosId;
-        $scope.local = Locales.get($stateParams.fotosId);
-
-        $scope.items = [
-            {
-                src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_000.jpg',
-                sub: ''
-            },
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_001.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_002.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_003.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_004.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_005.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_006.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_007.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_008.jpg'},
-            {src:'http://zonadeclubs.com/imagenes/Albumes/7041/foto_009.jpg'},
-          ]
+    $scope.loadAlunos = function loadAlunos() {
+      alunoService.loadAlunos().$loaded().then(function(){
+        $scope.alunos = alunoService.loadAlunos();
+        $ionicLoading.hide();
+      })
+    }
 
 })
 
 .controller('FavoritosController', function($scope) {})
 
-.controller('LoginController', function($scope, $state) {
+.controller('LoginController', function($scope, $state, $ionicLoading) {
+
+  $scope.user = {};
+
+  $scope.checkUser = function(){
+
+    var user = firebase.auth().currentUser;
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      console.log(user);
+      if (user) {
+        $state.go('tab.cadastro');
+      }else{
+        $state.go('login');
+      }
+    });
+  }
 
   $scope.login = function(user){
 
@@ -93,8 +196,7 @@ angular.module('starter.controllers', [])
     email = user.email;
     password = user.password;
 
-    console.log(email);
-    console.log(password);
+    $ionicLoading.show();
 
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
 
@@ -102,16 +204,19 @@ angular.module('starter.controllers', [])
       var errorMessage = error.message;
 
       console.log(errorCode);
+      $ionicLoading.hide();
 
     });
 
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
+        $ionicLoading.hide();
         $state.go('tab.cadastro');
       }else{
         $state.go('login');
       }
     });
+
   }
 
   $scope.signUp = function(user){

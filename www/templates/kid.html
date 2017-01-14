@@ -1,0 +1,43 @@
+<ion-modal-view ng-controller="kidController">
+  <ion-content>
+    <ion-header-bar class="bar bar-header bar-balanced barCustom">
+      <button class="button button-clear button-top-left" ng-click="closeKid()">
+          <i class="icon icon-left ion-android-arrow-back"></i>
+        </button>
+    </ion-header-bar>
+    <ion-list>
+      <div class="kidWrapper">
+        <div class="paymentLine"></div>
+        <div class="kidRegistrationData">
+          <div class="mainKidRegistrationData">
+            <img src="img\mike.png">
+            <h5>{{aluno.nome}}</h5>
+          </div>
+        </div>
+        <div class="otherInf card">
+          <div class="infBlock">
+            <p class="infLabel">Responsável</p>
+            <p class="inf">{{aluno.responsavel}}</p>
+          </div>
+          <div class="infBlock">
+            <p class="infLabel">Idade</p>
+            <p class="inf">{{aluno.idade}}</p>
+          </div>
+          <div class="infBlock">
+            <p class="infLabel">Telefone</p>
+            <p class="inf">{{aluno.telefone}}</p>
+          </div>
+          <div class="infBlock">
+            <p class="infLabel">Data de Nascimento</p>
+            <p class="inf">02/02/2006</p>
+          </div>
+        </div>
+        <div class="kidPaymentWrapper">
+          <div class="kidPaymentData card" ng-repeat="periodo in periodos">
+            <ion-checkbox ng-model="isPaid" class="item-checkbox-right">{{periodo.desc}}</ion-checkbox>            
+          </div>
+        </div>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-modal-view>

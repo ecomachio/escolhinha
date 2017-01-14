@@ -89,7 +89,7 @@
 }
 
 .author{
-	position: absolute;
+	position: fixed;
 	text-align: center;
 	bottom: 10px;
 	width: 100%;
@@ -102,3 +102,74 @@
 	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("../img/imageLogin2.jpg");
 	background-size: cover;
 }
+
+.paymentLine{
+	height: 7vh;
+	background: #33cd5f;
+	width: 100%;
+}
+
+.kidRegistrationData{
+	height: 40vh;
+	background: #28a54c;
+	background: #33cd5f;
+	padding: 10px 20px 20px 20px;
+	color: white;
+}
+
+.mainKidRegistrationData{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+	justify-content: space-around;
+	height: 80%;
+}
+
+.kidRegistrationData img{
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+}
+
+.kidRegistrationData h5{
+	font-size: 150%;
+	color: white;
+}
+
+.otherInf{
+	margin-top: -15%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	padding: 20px;
+}
+
+.otherInf .infBlock{
+	min-width: 50%;
+}
+
+.otherInf .infBlock .infLabel{
+	font-weight: bold;
+}
+
+.otherInf .infBlock p{
+	margin: 5px 0 0 0;
+}
+
+.barCustom{
+	text-align: center;
+}
+
+.platform-android .checkbox-platform input:after, .platform-android .checkbox-platform .checkbox-icon:after, .checkbox-square input:after, .checkbox-square .checkbox-icon:after {
+	top:33%;
+}
+
+/*
+.spinner svg {
+  width: 28px;
+  height: 28px;
+  stroke: #444;
+  fill: #444;
+}*/

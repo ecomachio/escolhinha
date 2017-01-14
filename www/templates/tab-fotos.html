@@ -1,4 +1,4 @@
-<ion-view view-title="Financeiro">
+<ion-view view-title="Financeiro" ng-init="loadAlunos()">
 
   <ion-nav-buttons side="secondary">
     <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()"></button>
@@ -13,45 +13,10 @@
         <h4>Novembro - 2017</h4>
       </div>
       <div class="list card">
-        <a class="item item-avatar" href="#">
+        <a class="item item-avatar" ng-repeat="aluno in alunos">
            <img src="img\max.png">
-           <h2>Joao</h2>
-           <p>Pedro Oliveira, Vô.</p>
-        </a>
-        <a class="item item-avatar" href="#">
-           <img src="img\mike.png">
-           <h2>Joao</h2>
-           <p>Mariana Fernandez, Mãe.</p>
-        </a>
-        <a class="item item-avatar" href="#">
-           <img src="img\adam.jpg">
-           <h2>Joao</h2>
-           <p>Hélio da silva, Pai</p>
-        </a>
-        <a class="item item-avatar" href="#">
-           <img src="img\perry.png">
-           <h2>Joao</h2>
-           <p>Joana Leite</p>
-        </a>
-        <a class="item item-avatar" href="#">
-           <img src="img\max.png">
-           <h2>Joao</h2>
-           <p>Pedro Oliveira, Vô.</p>
-        </a>
-        <a class="item item-avatar" href="#">
-           <img src="img\mike.png">
-           <h2>Joao</h2>
-           <p>Mariana Fernandez, Mãe.</p>
-        </a>
-        <a class="item item-avatar" href="#">
-           <img src="img\adam.jpg">
-           <h2>Joao</h2>
-           <p>Hélio da silva, Pai</p>
-        </a>
-        <a class="item item-avatar" href="#">
-           <img src="img\perry.png">
-           <h2>Joao</h2>
-           <p>Joana Leite</p>
+           <h2>{{aluno.nome}}</h2>
+           <p>{{aluno.responsavel}}</p>
         </a>
        </div>
      </div>

@@ -1,0 +1,28 @@
+<ion-modal-view ng-controller="addController">
+  <ion-content>
+    <button class="button button-clear button-top-left" ng-click="closeAdd()">
+         <i class="icon icon-left ion-android-arrow-back"></i>
+     </button>
+    <ion-list>
+      <div class="kidWrapper">
+        <div class="paymentLine"></div>
+          <div class="list">
+           <label class="item item-input">
+             <input type="text" placeholder="Nome" ng-model="aluno.nome">
+           </label>
+           <label class="item item-input">
+             <input type="text" placeholder="Responsavel" ng-model="aluno.responsavel">
+           </label>
+           <label class="item item-input">
+             <input type="text" placeholder="email" ng-model="aluno.email">
+           </label>
+           <label class="item item-input">
+           <input type="text" placeholder="idade" ng-model="aluno.idade">
+           </label>
+          </div>
+          <a class="cardMargin button button-block button-balanced" ng-click="add(aluno)">Adicionar aluno</a>
+        </div>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-modal-view>
