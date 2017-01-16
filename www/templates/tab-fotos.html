@@ -5,9 +5,9 @@
   </ion-nav-buttons>
   <ion-content class="main">
     <div class="financeiro-wrapper">
-      <div class="financeiro-data">
+      <div class="financeiro-data" ng-click="countInadimplentes()">
           <h3>Alunos pendentes</h3>
-          <h1>15</h1>
+          <h1>{{inadimplentes}}</h1>
       </div>
       <div class="financeiro-period">
         <h4>Novembro - 2017</h4>

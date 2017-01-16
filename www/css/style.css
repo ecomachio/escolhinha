@@ -159,12 +159,19 @@
 }
 
 .barCustom{
-	text-align: center;
+
 }
+
+.barCustom .title{
+	left: 0 !important;
+	text-align: center !important;
+}
+
 
 .platform-android .checkbox-platform input:after, .platform-android .checkbox-platform .checkbox-icon:after, .checkbox-square input:after, .checkbox-square .checkbox-icon:after {
 	top:33%;
 }
+
 
 /*
 .spinner svg {

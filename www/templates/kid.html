@@ -3,7 +3,8 @@
     <ion-header-bar class="bar bar-header bar-balanced barCustom">
       <button class="button button-clear button-top-left" ng-click="closeKid()">
           <i class="icon icon-left ion-android-arrow-back"></i>
-        </button>
+      </button>
+      <p class="title">Perfil do aluno</p>
     </ion-header-bar>
     <ion-list>
       <div class="kidWrapper">
@@ -33,8 +34,12 @@
           </div>
         </div>
         <div class="kidPaymentWrapper">
-          <div class="kidPaymentData card" ng-repeat="periodo in periodos">
-            <ion-checkbox ng-model="isPaid" class="item-checkbox-right">{{periodo.desc}}</ion-checkbox>            
+          <div class="kidPaymentData card">
+            <ion-checkbox ng-model="mensalidade.pago" class="item-checkbox-right"
+            ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']:true"
+            ng-change="pagaMensalidade(mensalidade)">
+              {{mensalidade.mes | converteMes }} {{mensalidade.ano}}
+            </ion-checkbox>
           </div>
         </div>
       </div>

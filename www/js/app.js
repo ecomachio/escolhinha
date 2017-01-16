@@ -32,111 +32,127 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   }
 })
 
-.service('periodoService', function($ionicLoading, $firebaseArray){
+.service('periodoService', function($ionicLoading, $firebaseArray, $firebaseObject){
+  var self = this;
+  this.getMensalidades = function(id){
+    var mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(id);
+    mensalidades = $firebaseArray(mensalidadesRef);
 
-    this.currentPeriodo = function functionName() {
-        return;
+    return mensalidades;
+  }
+
+  this.loadPeriod = function() {
+
+    var periodosRef = firebase.database().ref().child('periodo');
+    periodos = $firebaseArray(periodosRef);
+    periodos.$loaded().then(function() {
+      self.checkNewPeriod(periodos);
+    })
+  }
+
+  this.currentPeriodo = function currentPeriodo() {
+    var d = new Date();
+    var mes = d.getMonth();
+    var ano = d.getFullYear();
+
+    var per = mes.toString() + "/" + ano.toString();
+
+    return per;
+  }
+
+  this.checkNewPeriod = function checkNewPeriod(periodos) {
+    var flagJaExistePer = false;
+    var per = self.currentPeriodo();
+    //console.log(periodos);
+
+    // periodo ainda nao existe
+    for (var i = 0; i < periodos.length; i++) {
+      console.log("periodos[i].periodo ");
+      console.log(periodos[i].periodo);
+      console.log(per);
+      if(periodos[i].periodo == per)
+        flagJaExistePer = true;
     }
+    var mes = per.substring(0,per.indexOf("/"));
+    var ano = per.substring(per.indexOf("/")+1, per.length)
+    if(!flagJaExistePer){
+      periodos.$add({
+        periodo: per,
+        mes: self.converteMes(parseInt(mes)),
+        ano: ano
+      }).then(function(ref){
+        console.log("periodo incluido");
 
-    this.loadPeriod = function() {
+        var alunosRef = firebase.database().ref().child('aluno');
+        var alunos = $firebaseArray(alunosRef);
+        alunos.$loaded().then(function(){
+          for (var i = 0; i < alunos.length; i++) {
+            var mensalidadesRef = firebase.database().ref().child('mensalidades');
+            var mensalidades = $firebaseArray(mensalidadesRef);
 
-      var periodosRef = firebase.database().ref().child('periodo');
-      periodos = $firebaseArray(periodosRef);
-      periodos.$loaded().then(function() {
-        checkNewPeriod(periodos);
-
-        $scope.periodos = [];
-
-        for (var i = 0; i < periodos.length; i++) {
-          var per = {
-            mes: periodos[i].periodo.substring(0,1),
-            ano: periodos[i].periodo.substring(2,6)
+            mensalidades.$add({
+              aluno: alunos[i].$id,
+              periodo: per,
+              ano: ano,
+              mes: mes,
+              pago: false
+            })
           }
-          $scope.periodos.push(per);
-        }
+        })
 
-        $scope.periodos = converteData.converteMes($scope.periodos);
       })
     }
+  }
 
-    function checkNewPeriod(periodos) {
-      var d = new Date();
-      var mes = d.getMonth();
-      var ano = d.getFullYear();
-      var flagJaExistePer;
-      if(mes < 10){
-        mes = "0" + mes;
+  this.converteMes = function converteMes(n) {
+
+      switch (parseInt(n)) {
+        case 0:
+            mes = "Janeiro";
+            break;
+        case 1:
+            mes ="Fevereiro"
+            break;
+        case 2:
+            mes ="Março"
+            break;
+        case 3:
+            mes ="Abril"
+            break;
+        case 4:
+            mes ="Maio"
+            break;
+        case 5:
+            mes ="Junho"
+            break;
+        case 6:
+            mes ="Julho"
+            break;
+        case 7:
+            mes ="Agosto"
+            break;
+        case 8:
+            mes ="Setembro"
+            break;
+        case 9:
+            mes ="Outubro"
+            break;
+        case 10:
+            mes ="Novembro"
+            break;
+        default:
+          mes ="Dezembro"
       }
+      console.log(n, mes);
+      return mes;
 
-      var per = mes.toString() + ano.toString();
-      console.log(periodos);
-
-      // periodo ainda nao existe
-      for (var i = 0; i < periodos.length; i++) {
-        if(periodos[i].periodo == per)
-          flagJaExistePer = true;
-      }
-
-      if(!flagJaExistePer){
-        periodos.$add({
-          periodo: per
-        }).then(function(){
-          console.log("periodo incluido");
-          var alunosRef = firebase.database().ref().child('aluno');
-          var alunos = $firebaseArray(alunosRef);
-          alunos.$loaded().then(function(){
-            for (var i = 0; i < alunos.length; i++) {
-              //adcionar mensalidade
-            }
-          })
-
-        })
-      }
     }
+})
 
-    this.converteMes = function (periodos) {
-        for (var i = 0; i < periodos.length; i++) {
-          console.log(periodos[i].mes);
-          switch (parseInt(periodos[i].mes)) {
-            case 0:
-              periodos[i].desc = "Janeiro";
-              break;
-            case 1:
-                periodos[i].desc ="Fevereiro"
-                break;
-            case 2:
-                periodos[i].desc ="Março"
-                break;
-            case 3:
-                periodos[i].desc ="Abril"
-                break;
-            case 4:
-                periodos[i].desc ="Maio"
-                break;
-            case 5:
-                periodos[i].desc ="Junho"
-                break;
-            case 6:
-                periodos[i].desc ="Julho"
-                break;
-            case 7:
-                periodos[i].desc ="Agosto"
-                break;
-            case 8:
-                periodos[i].desc ="Setembro"
-                break;
-            case 9:
-                periodos[i].desc ="Outubro"
-                break;
-            case 10:
-                periodos[i].desc ="Novembro"
-                break;
-            default:
-              periodos[i].desc ="Dezembro"
-          }
-        }
-        return periodos;
-      }
+.filter('converteMes', function(periodoService) {
+  return function(n) {
+    return periodoService.converteMes(n);
+  };
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProvider, $ionicConfigProvider) {

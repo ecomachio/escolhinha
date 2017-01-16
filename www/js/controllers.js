@@ -16,14 +16,15 @@ angular.module('starter.controllers', ['firebase'])
 
   $scope.loadAlunos = function loadAlunos() {
     $ionicLoading.show();
-    alunoService.loadAlunos().$loaded().then(function(){
-      $scope.alunos = alunoService.loadAlunos();
-      loadPeriod();
+
+    alunoService.loadAlunos().$loaded().then(function(alunos){
+      $scope.alunos = alunos;
+      periodoService.loadPeriod();
       $ionicLoading.hide();
     })
 
   }
-
+  /*
   function loadPeriod() {
 
     var periodosRef = firebase.database().ref().child('periodo');
@@ -72,12 +73,21 @@ angular.module('starter.controllers', ['firebase'])
 
       })
     }
-  }
+  } */
 
   $scope.openKid = function(aluno){
 
     $scope.aluno = aluno;
-    console.log($scope.aluno);
+    var mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
+    mensalidades = $firebaseArray(mensalidadesRef);
+    mensalidades.$loaded().then(function() {
+      $scope.mensalidades = mensalidades;
+      for (var i = 0; i < mensalidades.length; i++) {
+        mensalidades[i].data = new Date(mensalidades[i].ano, mensalidades[i].mes, 01, 0, 0, 0, 0);
+      }
+    })
+    console.log($scope.mensalidades)
+
 
     $scope.modalKid.show();
   }
@@ -87,8 +97,24 @@ angular.module('starter.controllers', ['firebase'])
   }
 })
 
-.controller('kidController', function($scope, $state) {
+.controller('kidController', function($scope, $state, $firebaseArray, $firebaseObject) {
   console.log('kidController');
+
+  $scope.pagaMensalidade = function(mensalidade) {
+    mensalidades.$save(mensalidade);
+
+    atualizaAluno(mensalidade.aluno, mensalidade.pago);
+  }
+
+  function atualizaAluno(id, pago){
+    console.log("pago = ", pago);
+    var alunoRef = firebase.database().ref().child('aluno').child(id);
+    var aluno = $firebaseObject(alunoRef);
+    aluno.$loaded().then(function(){
+      aluno.inadimplente = !pago;
+      aluno.$save();
+    })
+  }
 
   $scope.closeKid = function(){
     $scope.modalKid.hide();
@@ -96,9 +122,9 @@ angular.module('starter.controllers', ['firebase'])
 
 })
 
-.controller('addController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray) {
+.controller('addController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray, periodoService) {
 
-  $scope.add = function(aluno){
+  $scope.add = function(addAluno){
 
     $ionicLoading.show();
 
@@ -108,22 +134,22 @@ angular.module('starter.controllers', ['firebase'])
     console.log(alunos);
 
     alunos.$add({
-      nome: aluno.nome,
-      idade: aluno.idade,
-      responsavel: aluno.responsavel,
-      email: aluno.email,
-      dataNascimento: "31/12/9999",
-      mensalidade: {
-        periodo: periodo,
-        pago: false
-      }
+      nome: addAluno.nome,
+      idade: addAluno.idade,
+      responsavel: addAluno.responsavel,
+      email: addAluno.email,
+      dataNascimento: "31/12/9999"
     }).then(function(ref){
-      console.log("aluno adicionado");
-      aluno.nome = "";
-      aluno.idade = "";
-      aluno.responsavel = "";
-      aluno.email = "";
-      aluno.dataNascimento = "";
+      console.log("Aluno adicionado");
+
+      addAluno.nome = "";
+      addAluno.idade = "";
+      addAluno.responsavel = "";
+      addAluno.email = "";
+      addAluno.dataNascimento = "";
+
+      adicionarMensalidade(ref.key);
+
       $ionicLoading.hide();
     }).catch(function(error){
       console.log(error);
@@ -133,6 +159,26 @@ angular.module('starter.controllers', ['firebase'])
 
   $scope.closeAdd = function(){
     $scope.modalAdd.hide();
+  }
+
+  function adicionarMensalidade(key) {
+    console.log("adicionarMensalidade");
+    mensalidadesRef = firebase.database().ref().child('mensalidades');
+    mensalidades = $firebaseArray(mensalidadesRef);
+
+    per = periodoService.currentPeriodo();
+    var mes = per.substring(0,per.indexOf("/"));
+    var ano = per.substring(per.indexOf("/")+1, per.length)
+
+    console.log(per.substring(0,per.indexOf("\\")));
+    mensalidades.$add({
+      aluno: key,
+      periodo: per,
+      ano: ano,
+      mes: mes,
+      pago: false
+    })
+
   }
 
 })
@@ -162,10 +208,24 @@ angular.module('starter.controllers', ['firebase'])
     $scope.loadAlunos = function loadAlunos() {
       alunoService.loadAlunos().$loaded().then(function(){
         $scope.alunos = alunoService.loadAlunos();
+        $scope.inadimplentes = $scope.countInadimplentes();
         $ionicLoading.hide();
       })
     }
 
+    $scope.countInadimplentes = function(){
+      var cont = 0
+      var alunos = $scope.alunos;
+      var _mensalidades = [];
+      //todos os alunos
+      console.log("countInadimplentes");
+      alunos.$loaded().then(function(){
+        for (var i = 0; i < alunos.length; i++) {
+          if(alunos[i].inadimplente)
+            cont++;
+        }
+      })
+    }
 })
 
 .controller('FavoritosController', function($scope) {})
