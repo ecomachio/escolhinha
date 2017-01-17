@@ -110,39 +110,32 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalEditKid.show();
   }
 
-  $scope.pagaMensalidade = function(mensalidade) {
+  $scope.pagaMensalidade = function(mensalidade){
+
     mensalidades.$save(mensalidade).then(function(){
+      const idAluno = mensalidade.aluno;
+      let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(idAluno);
+      let mensalidades = $firebaseArray(mensalidadesRef);
 
-      var idAluno = mensalidade.aluno;
-
-      var mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(idAluno);
-      var mensalidades = $firebaseArray(mensalidadesRef);
       mensalidades.$loaded().then(function(){
+        let alunoRef = firebase.database().ref().child('aluno').child(idAluno);
+        let aluno = $firebaseObject(alunoRef);
 
-        verificaMensalidades(mensalidades, function(err, isInadimplente){
-
-          var alunoRef = firebase.database().ref().child('aluno').child(idAluno);
-          var aluno = $firebaseObject(alunoRef);
-          aluno.$loaded().then(function(){
-            aluno.inadimplente = isInadimplente;
-            aluno.$save();
-          })
-        });
+        aluno.$loaded().then(function(){
+          aluno.inadimplente = isInadimplente(mensalidades);
+          aluno.$save();
+        })
       })
     });
   }
 
-  function verificaMensalidades(mensalidades, done){
-      for (var i = 0; i < mensalidades.length; i++) {
-        if(!mensalidades[i].pago){
-          //aluno esta inadimplente | isInadimplente = true
-          done(null, true);
-          return;
-        }
-      }
-      //nao foi encontrada nenhuma mensalidade pendente no for acima
-      //retorno que o usuario nao esta inadimplente | isInadimplente = false
-      done(null, false);
+  function isInadimplente(mensalidades, done){
+
+    let mensalidadesPendentes = mensalidades.filter((mensalidade) => (!mensalidade.pago))
+
+    if(mensalidadesPendentes.length)
+       return true;
+    else return false;
   }
 
   function atualizaAluno(id, pago){
@@ -172,10 +165,34 @@ angular.module('starter.controllers', ['firebase'])
   }
 
   $scope.remove = function(aluno){
-    aluno.$remove().then(function(){
-      console.log("aluno removido");
-      $scope.modalEditKid.hide();
+    let ref = firebase.database().ref().child('aluno').child(aluno.$id);
+
+    aluno = $firebaseObject(ref);
+    aluno.$loaded().then(function(){
+      aluno.$remove()
+      .then(function(){
+        console.log("Aluno removido");
+        aluno = {}
+        $scope.modalEditKid.hide();
+        $scope.modalKid.hide();
+      })
+      .catch(function(err){
+        console.log("Erro ao remover MSG", err);
+      })
     })
+
+    /*
+    alunos.$loaded().then(function(){
+      alunos.$remove(aluno)
+      .then(function(){
+        console.log("aluno removido");
+        $scope.modalEditKid.hide();
+      })
+      .catch(function(err){
+        console.log("Erro ao remover aluno: ", err);
+      })
+    })
+    */
   }
 
 })

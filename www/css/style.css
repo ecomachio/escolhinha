@@ -62,7 +62,7 @@
 .loginTitle h1{
 	color: white;
 
-	text-shadow: 2px 2px 2px #141414;
+	text-shadow: 2px 2px 2px #242424;
 	padding: 25px 0 0 0;
 	text-align: center;
 	z-index: 999;
@@ -95,6 +95,8 @@
 	bottom: 10px;
 	width: 100%;
 	color: #aaa;
+	text-decoration: none;
+	bottom: 5px;
 }
 
 .imageLogin{
