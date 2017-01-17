@@ -86,8 +86,7 @@ angular.module('starter.controllers', ['firebase'])
         mensalidades[i].data = new Date(mensalidades[i].ano, mensalidades[i].mes, 01, 0, 0, 0, 0);
       }
     })
-    console.log($scope.mensalidades)
-
+    console.log($scope.aluno);
 
     $scope.modalKid.show();
   }
@@ -97,27 +96,86 @@ angular.module('starter.controllers', ['firebase'])
   }
 })
 
-.controller('kidController', function($scope, $state, $firebaseArray, $firebaseObject) {
+.controller('kidController', function($scope, $state, $firebaseArray, $firebaseObject, $ionicModal) {
   console.log('kidController');
 
-  $scope.pagaMensalidade = function(mensalidade) {
-    mensalidades.$save(mensalidade);
+  $ionicModal.fromTemplateUrl('templates/editKid.html', {
+    scope: $scope
+  }).then(function(modalEditKid) {
+    $scope.modalEditKid = modalEditKid;
+  });
 
-    atualizaAluno(mensalidade.aluno, mensalidade.pago);
+  $scope.openEditKid = function(){
+    console.log("openEditKid;");
+    $scope.modalEditKid.show();
+  }
+
+  $scope.pagaMensalidade = function(mensalidade) {
+    mensalidades.$save(mensalidade).then(function(){
+
+      var idAluno = mensalidade.aluno;
+
+      var mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(idAluno);
+      var mensalidades = $firebaseArray(mensalidadesRef);
+      mensalidades.$loaded().then(function(){
+
+        verificaMensalidades(mensalidades, function(err, isInadimplente){
+
+          var alunoRef = firebase.database().ref().child('aluno').child(idAluno);
+          var aluno = $firebaseObject(alunoRef);
+          aluno.$loaded().then(function(){
+            aluno.inadimplente = isInadimplente;
+            aluno.$save();
+          })
+        });
+      })
+    });
+  }
+
+  function verificaMensalidades(mensalidades, done){
+      for (var i = 0; i < mensalidades.length; i++) {
+        if(!mensalidades[i].pago){
+          //aluno esta inadimplente | isInadimplente = true
+          done(null, true);
+          return;
+        }
+      }
+      //nao foi encontrada nenhuma mensalidade pendente no for acima
+      //retorno que o usuario nao esta inadimplente | isInadimplente = false
+      done(null, false);
   }
 
   function atualizaAluno(id, pago){
     console.log("pago = ", pago);
     var alunoRef = firebase.database().ref().child('aluno').child(id);
     var aluno = $firebaseObject(alunoRef);
+    aluno.inadimplente = !pago;
+    aluno.$save();
     aluno.$loaded().then(function(){
-      aluno.inadimplente = !pago;
-      aluno.$save();
     })
   }
 
   $scope.closeKid = function(){
     $scope.modalKid.hide();
+  }
+
+})
+
+.controller('editKidController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray, periodoService) {
+
+  $scope.closeEditKid = function(){
+    $scope.modalEditKid.hide();
+  }
+
+  $scope.save = function(aluno){
+    console.log(aluno);
+  }
+
+  $scope.remove = function(aluno){
+    aluno.$remove().then(function(){
+      console.log("aluno removido");
+      $scope.modalEditKid.hide();
+    })
   }
 
 })
@@ -138,6 +196,7 @@ angular.module('starter.controllers', ['firebase'])
       idade: addAluno.idade,
       responsavel: addAluno.responsavel,
       email: addAluno.email,
+      inadimplente: true,
       dataNascimento: "31/12/9999"
     }).then(function(ref){
       console.log("Aluno adicionado");
@@ -206,6 +265,7 @@ angular.module('starter.controllers', ['firebase'])
 .controller('FotosController', function($scope, $ionicLoading, $firebaseObject, $firebaseArray, $ionicLoading, alunoService) {
 
     $scope.loadAlunos = function loadAlunos() {
+      $ionicLoading.show();
       alunoService.loadAlunos().$loaded().then(function(){
         $scope.alunos = alunoService.loadAlunos();
         $scope.inadimplentes = $scope.countInadimplentes();
@@ -216,14 +276,18 @@ angular.module('starter.controllers', ['firebase'])
     $scope.countInadimplentes = function(){
       var cont = 0
       var alunos = $scope.alunos;
-      var _mensalidades = [];
+
+      $scope.inadimplentes = "...";
+
       //todos os alunos
-      console.log("countInadimplentes");
       alunos.$loaded().then(function(){
+        console.log(alunos);
         for (var i = 0; i < alunos.length; i++) {
           if(alunos[i].inadimplente)
             cont++;
         }
+        console.log(cont);
+        $scope.inadimplentes = cont;
       })
     }
 })

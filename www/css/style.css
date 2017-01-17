@@ -16,6 +16,7 @@
 	padding: 40px 10px;
 	background: #ef473a;
 	text-align: center;
+	position: relative;
 }
 
 .financeiro-wrapper .financeiro-data h1,
@@ -115,7 +116,10 @@
 	background: #33cd5f;
 	padding: 10px 20px 20px 20px;
 	color: white;
+	position: relative;
+	z-index: 9;
 }
+
 
 .mainKidRegistrationData{
 	display: flex;
@@ -144,6 +148,8 @@
 	justify-content: space-around;
 	flex-wrap: wrap;
 	padding: 20px;
+	position: relative;
+	z-index: 10;
 }
 
 .otherInf .infBlock{
@@ -168,10 +174,24 @@
 }
 
 
-.platform-android .checkbox-platform input:after, .platform-android .checkbox-platform .checkbox-icon:after, .checkbox-square input:after, .checkbox-square .checkbox-icon:after {
+.platform-android
+.checkbox-platform input:after,
+.platform-android .checkbox-platform
+.checkbox-icon:after,
+.checkbox-square input:after,
+.checkbox-square
+.checkbox-icon:after {
 	top:33%;
 }
 
+.iconCustom{
+	position: absolute;
+	right: 5%;
+	top: 5%;
+	color: white;
+	font-size: 200%;
+	z-index: 5;
+}
 
 /*
 .spinner svg {

@@ -5,7 +5,9 @@
   </ion-nav-buttons>
   <ion-content class="main">
     <div class="financeiro-wrapper">
-      <div class="financeiro-data" ng-click="countInadimplentes()">
+      <div class="financeiro-data" >
+          <i class="iconCustom icon ion-android-refresh"
+          ng-click="countInadimplentes()"></i>
           <h3>Alunos pendentes</h3>
           <h1>{{inadimplentes}}</h1>
       </div>

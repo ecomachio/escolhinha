@@ -1,27 +1,26 @@
 <ion-modal-view ng-controller="addController">
+  <ion-header-bar class="bar bar-header bar-balanced barCustom">
+    <button class="button button-clear button-top-left" ng-click="closeAdd()">
+        <i class="icon icon-left ion-android-arrow-back"></i>
+    </button>
+    <p class="title">Adicionar aluno</p>
+  </ion-header-bar>
   <ion-content>
-    <button class="button button-clear button-top-left" ng-click="closeAdd()">         
-         <i class="icon icon-left ion-android-arrow-back"></i>
-     </button>
-    <ion-list>
-      <div class="kidWrapper">
-          <div class="list">
-           <label class="item item-input">
-             <input type="text" placeholder="Nome" ng-model="addAluno.nome">
-           </label>
-           <label class="item item-input">
-             <input type="text" placeholder="Responsavel" ng-model="addAluno.responsavel">
-           </label>
-           <label class="item item-input">
-             <input type="text" placeholder="email" ng-model="addAluno.email">
-           </label>
-           <label class="item item-input">
-           <input type="text" placeholder="idade" ng-model="addAluno.idade">
-           </label>
-          </div>
-          <a class="cardMargin button button-block button-balanced" ng-click="add(addAluno)">Adicionar aluno</a>
-        </div>
+    <div class="list">
+       <label class="item item-input">
+         <input type="text" placeholder="Nome" ng-model="addAluno.nome">
+       </label>
+       <label class="item item-input">
+         <input type="text" placeholder="Responsavel" ng-model="addAluno.responsavel">
+       </label>
+       <label class="item item-input">
+         <input type="text" placeholder="email" ng-model="addAluno.email">
+       </label>
+       <label class="item item-input">
+       <input type="text" placeholder="idade" ng-model="addAluno.idade">
+       </label>
       </div>
-    </ion-list>
+      <a class="cardMargin button button-block button-balanced" ng-click="add(addAluno)">Adicionar aluno</a>
+    </div>
   </ion-content>
 </ion-modal-view>

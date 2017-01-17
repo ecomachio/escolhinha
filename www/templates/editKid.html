@@ -1,0 +1,27 @@
+<ion-modal-view ng-controller="editKidController">
+  <ion-header-bar class="bar bar-header bar-balanced barCustom">
+    <button class="button button-clear button-top-left" ng-click="closeEditKid()">
+        <i class="icon icon-left ion-android-arrow-back"></i>
+    </button>
+    <p class="title">Editar aluno</p>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list">
+       <label class="item item-input">
+         <input type="text" placeholder="Nome" ng-model="aluno.nome">
+       </label>
+       <label class="item item-input">
+         <input type="text" placeholder="Responsavel" ng-model="aluno.responsavel">
+       </label>
+       <label class="item item-input">
+         <input type="text" placeholder="email" ng-model="aluno.email">
+       </label>
+       <label class="item item-input">
+       <input type="text" placeholder="idade" ng-model="aluno.idade">
+       </label>
+      </div>
+      <a class="cardMargin button button-block button-assertive" ng-click="remove(aluno)">Deletar Aluno</a>
+      <a class="cardMargin button button-block button-balanced" ng-click="save(aluno)">Salvar</a>
+    </div>
+  </ion-content>
+</ion-modal-view>
