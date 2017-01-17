@@ -49,4 +49,23 @@
     <splash src="resources/ios/splash/Default~iphone.png" width="320" height="480"/>
   </platform>
   <icon src="resources/ios/icon/icon-small@3x.png"/>
+  <!-- Allow links to web pages to open in a browser -->
+	<allow-intent href="http://*/*" />
+	<allow-intent href="https://*/*" />
+
+	<!-- Allow links to example.com to open in a browser -->
+	<allow-intent href="http://example.com/*" />
+
+	<!-- Wildcards are allowed for the protocol, as a prefix
+     to the host, or as a suffix to the path -->
+	<allow-intent href="*://*.example.com/*" />
+
+	<!-- Allow SMS links to open messaging app -->
+	<allow-intent href="sms:*" />
+	
+	<!-- Allow tel: links to open the dialer -->
+	<allow-intent href="tel:*" />
+	
+	<!-- Allow geo: links to open maps -->
+	<allow-intent href="geo:*" />
 </widget>
