@@ -138,16 +138,6 @@ angular.module('starter.controllers', ['firebase'])
     else return false;
   }
 
-  function atualizaAluno(id, pago){
-    console.log("pago = ", pago);
-    var alunoRef = firebase.database().ref().child('aluno').child(id);
-    var aluno = $firebaseObject(alunoRef);
-    aluno.inadimplente = !pago;
-    aluno.$save();
-    aluno.$loaded().then(function(){
-    })
-  }
-
   $scope.closeKid = function(){
     $scope.modalKid.hide();
   }
@@ -160,19 +150,31 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalEditKid.hide();
   }
 
+  function getAluno(_aluno){
+    let ref = firebase.database().ref().child('aluno').child(_aluno.$id);
+    let res = $firebaseObject(ref);
+    return res.$loaded();
+  }
+
   $scope.save = function(aluno){
-    console.log(aluno);
+    getAluno(aluno).then(function(aluno){
+      aluno.$save()
+      .then(function(){
+        console.log("Aluno alterado");
+        $scope.modalEditKid.hide();
+      })
+      .catch(function(err){
+        console.log("Erro ao alterar MSG", err);
+      })
+    })
   }
 
   $scope.remove = function(aluno){
-    let ref = firebase.database().ref().child('aluno').child(aluno.$id);
-
-    aluno = $firebaseObject(ref);
-    aluno.$loaded().then(function(){
+    getAluno(aluno).then(function(aluno){
       aluno.$remove()
       .then(function(){
         console.log("Aluno removido");
-        aluno = {}
+        aluno = {};
         $scope.modalEditKid.hide();
         $scope.modalKid.hide();
       })
@@ -180,19 +182,6 @@ angular.module('starter.controllers', ['firebase'])
         console.log("Erro ao remover MSG", err);
       })
     })
-
-    /*
-    alunos.$loaded().then(function(){
-      alunos.$remove(aluno)
-      .then(function(){
-        console.log("aluno removido");
-        $scope.modalEditKid.hide();
-      })
-      .catch(function(err){
-        console.log("Erro ao remover aluno: ", err);
-      })
-    })
-    */
   }
 
 })

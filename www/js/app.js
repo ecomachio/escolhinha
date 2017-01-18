@@ -89,7 +89,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
           for (var i = 0; i < alunos.length; i++) {
             var mensalidadesRef = firebase.database().ref().child('mensalidades');
             var mensalidades = $firebaseArray(mensalidadesRef);
-
             mensalidades.$add({
               aluno: alunos[i].$id,
               periodo: per,
@@ -98,10 +97,27 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
               pago: false
             })
           }
-        })
+          for (var i = 0; i < alunos.length; i++) {
+            let alunoRef = firebase.database().ref().child('aluno').child(alunos[i].$id);
+            let aluno = $firebaseObject(alunoRef);
 
+            aluno.$loaded().then(function(){
+              aluno.inadimplente = self.isInadimplente(mensalidades);
+              aluno.$save();
+            })
+          }
+        })
       })
     }
+  }
+
+  this.isInadimplente = function(mensalidades, done){
+
+    let mensalidadesPendentes = mensalidades.filter((mensalidade) => (!mensalidade.pago))
+
+    if(mensalidadesPendentes.length)
+       return true;
+    else return false;
   }
 
   this.converteMes = function converteMes(n) {

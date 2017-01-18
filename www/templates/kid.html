@@ -1,6 +1,7 @@
 <ion-modal-view ng-controller="kidController">
   <ion-content>
-    <ion-header-bar class="bar bar-header bar-balanced barCustom">
+    <ion-header-bar class="bar bar-header bar-balanced barCustom"
+                    ng-class="{ inadimHeaderClass: aluno.inadimplente }">
       <button class="button button-clear button-top-left" ng-click="closeKid()">
           <i class="icon icon-left ion-android-arrow-back"></i>
       </button>
@@ -9,11 +10,11 @@
     <ion-list>
       <div class="kidWrapper">
         <div class="paymentLine"></div>
-        <div class="kidRegistrationData">
+        <div class="kidRegistrationData" ng-class="{ inadimClass: aluno.inadimplente }">
           <i class="iconCustom icon ion-android-create"
                   ng-click="openEditKid()"></i>
           <div class="mainKidRegistrationData">
-            <img src="img\mike.png">
+            <img src="img\kidplaceholder.jpg">
             <h5>{{aluno.nome}}</h5>
           </div>
         </div>
@@ -36,10 +37,16 @@
           </div>
         </div>
         <div class="kidPaymentWrapper">
+          <div class="kidPaymentHeader">
+            <p>Mês</p>
+            <p>Pago</p>
+          </div>
           <div class="kidPaymentData card">
-            <ion-checkbox ng-model="mensalidade.pago" class="item-checkbox-right"
-            ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']:true"
-            ng-change="pagaMensalidade(mensalidade)">
+            <ion-checkbox ng-model="mensalidade.pago"
+                class="item-checkbox-right itemClass"
+                ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']:true"
+                ng-change="pagaMensalidade(mensalidade)"
+                ng-class="{ inadimItemClass: !mensalidade.pago }">
               {{mensalidade.mes | converteMes }} {{mensalidade.ano}}
             </ion-checkbox>
           </div>

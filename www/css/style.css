@@ -107,21 +107,49 @@
 }
 
 .paymentLine{
-	height: 7vh;
-	background: #33cd5f;
+	height: 6.5vh;
 	width: 100%;
+}
+
+.kidPaymentHeader{
+	font-weight: bold;
+	display: flex;
+	justify-content: space-between;
+	margin: 0 7% 0 5%;
+	padding: 0;
+}
+
+.kidPaymentData{
+	margin-top: 0;
 }
 
 .kidRegistrationData{
 	height: 40vh;
-	background: #28a54c;
 	background: #33cd5f;
 	padding: 10px 20px 20px 20px;
 	color: white;
 	position: relative;
 	z-index: 9;
+	transition: all 250ms ease-in-out;
 }
 
+.itemClass{
+	transition: all 200ms ease-in-out;
+	border-right: 5px solid #33cd5f !important;
+}
+
+.inadimHeaderClass{
+	/*background: #e6b500 !important;*/
+  background-color: #d62c1a !important;
+}
+.inadimClass{
+	background: #e74c3c !important;
+	/*background: #ffc900 !important;*/
+}
+
+.inadimItemClass{
+	border-right: 5px solid #ef473a !important;
+}
 
 .mainKidRegistrationData{
 	display: flex;
@@ -167,7 +195,7 @@
 }
 
 .barCustom{
-
+	transition: all 200ms ease-in-out;
 }
 
 .barCustom .title{
@@ -193,6 +221,10 @@
 	color: white;
 	font-size: 200%;
 	z-index: 5;
+}
+
+.kidPlaceHolder{
+	font-size: 500%;
 }
 
 /*
