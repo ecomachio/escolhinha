@@ -195,34 +195,47 @@ angular.module('starter.controllers', ['firebase'])
     var ref = firebase.database().ref().child('aluno');
     alunos = $firebaseArray(ref);
 
+    addAluno.idade = _calculateAge(addAluno.idadeDate);
+
     console.log(alunos);
 
-    alunos.$add({
-      nome: addAluno.nome,
-      idade: addAluno.idade,
-      responsavel: addAluno.responsavel,
-      email: addAluno.email,
-      inadimplente: true,
-      dataNascimento: "31/12/9999"
-    }).then(function(ref){
-      console.log("Aluno adicionado");
+      alunos.$add({
+        nome: addAluno.nome,
+        idade: addAluno.idade,
+        responsavel: addAluno.responsavel,
+        email: addAluno.email,
+        inadimplente: true,
+        dataNascimento: "31/12/9999"
+      }).then(function(ref){
+        console.log("Aluno adicionado");
 
-      addAluno.nome = "";
-      addAluno.idade = "";
-      addAluno.responsavel = "";
-      addAluno.email = "";
-      addAluno.dataNascimento = "";
+        addAluno = limparAluno(addAluno);
 
-      adicionarMensalidade(ref.key);
-
-      $ionicLoading.hide();
-    }).catch(function(error){
-      console.log(error);
-    });
-
+        adicionarMensalidade(ref.key);
+        $scope.modalAdd.hide();
+        $ionicLoading.hide();
+      }).catch(function(error){
+        console.log(error);
+      });
   }
 
+  function limparAluno(addAluno) {
+    addAluno.nome = "";
+    addAluno.idade = "";
+    addAluno.responsavel = "";
+    addAluno.email = "";
+    addAluno.dataNascimento = "";
+    addAluno.idadeDate = "";
+    return addAluno;
+  }
+
+  function _calculateAge(birthday) { // birthday is a date
+    let ageDifMs = Date.now() - birthday.getTime();
+    let ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
   $scope.closeAdd = function(){
+    $scope.addAluno = limparAluno($scope.addAluno);
     $scope.modalAdd.hide();
   }
 

@@ -6,21 +6,30 @@
     <p class="title">Adicionar aluno</p>
   </ion-header-bar>
   <ion-content>
-    <div class="list">
-       <label class="item item-input">
-         <input type="text" placeholder="Nome" ng-model="addAluno.nome">
-       </label>
-       <label class="item item-input">
-         <input type="text" placeholder="Responsavel" ng-model="addAluno.responsavel">
-       </label>
-       <label class="item item-input">
-         <input type="text" placeholder="email" ng-model="addAluno.email">
-       </label>
-       <label class="item item-input">
-       <input type="text" placeholder="idade" ng-model="addAluno.idade">
-       </label>
+    <form name="alunoForm" ng-submit="add(addAluno)" novalidate>
+      <div class="list">
+         <label class="item item-input">
+           <input type="text" placeholder="Nome" ng-model="addAluno.nome" required>
+         </label>
+         <label class="item item-input">
+           <input type="text" placeholder="Responsavel" ng-model="addAluno.responsavel" required>
+         </label>
+         <label class="item item-input">
+           <input type="email" placeholder="email" ng-model="addAluno.email" required>
+         </label>
+         <label class="item item-input">
+         <input type="date" placeholder="Nascimento" ng-model="addAluno.idadeDate" required>
+         <p ng-show="alunoForm.email.$invalid && !alunoForm.email.$pristine"
+            class="help-block">Email inválido.</p>
+         </label>
+
       </div>
-      <a class="cardMargin button button-block button-balanced" ng-click="add(addAluno)">Adicionar aluno</a>
-    </div>
+      <a type="submit"
+              class="cardMargin button button-block button-balanced"
+              ng-disabled="alunoForm.$invalid"
+              ng-click="add(addAluno)">
+              Adicionar aluno
+      </a>
+    </form>
   </ion-content>
 </ion-modal-view>
