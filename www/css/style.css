@@ -257,6 +257,7 @@ input[type="date"]:valid:before {
     bottom: 20px;
     left: auto;
     position: absolute;
+		border: none;
 }
 .bar .button.button-fab, .button.button-fab {
     -moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);
