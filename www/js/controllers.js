@@ -234,8 +234,11 @@ angular.module('starter.controllers', ['firebase'])
     let ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
-  $scope.closeAdd = function(){
-    $scope.addAluno = limparAluno($scope.addAluno);
+
+  $scope.closeAdd = function(addAluno){    
+    if(addAluno){
+      addAluno = limparAluno(addAluno);
+    }
     $scope.modalAdd.hide();
   }
 

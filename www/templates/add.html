@@ -1,12 +1,12 @@
 <ion-modal-view ng-controller="addController">
   <ion-header-bar class="bar bar-header bar-balanced barCustom">
-    <button class="button button-clear button-top-left" ng-click="closeAdd()">
+    <button class="button button-clear button-top-left" ng-click="closeAdd(addAluno)">
         <i class="icon icon-left ion-android-arrow-back"></i>
     </button>
     <p class="title">Adicionar aluno</p>
   </ion-header-bar>
   <ion-content>
-    <form name="alunoForm" ng-submit="add(addAluno)" novalidate>
+    <form name="alunoForm" ng-submit="add(addAluno)" novalidate ng-model="addAluno">
       <div class="list">
          <label class="item item-input">
            <input type="text" placeholder="Nome" ng-model="addAluno.nome" required>
