@@ -22,7 +22,6 @@ angular.module('starter.controllers', ['firebase'])
       periodoService.loadPeriod();
       $ionicLoading.hide();
     })
-
   }
   /*
   function loadPeriod() {
@@ -82,10 +81,9 @@ angular.module('starter.controllers', ['firebase'])
     mensalidades = $firebaseArray(mensalidadesRef);
     mensalidades.$loaded().then(function() {
       $scope.mensalidades = mensalidades;
-      for (var i = 0; i < mensalidades.length; i++) {
-        mensalidades[i].data = new Date(mensalidades[i].ano, mensalidades[i].mes, 01, 0, 0, 0, 0);
-      }
+      $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, aluno.contratoVencimento);
     })
+
     console.log($scope.aluno);
 
     $scope.modalKid.show();
@@ -96,7 +94,7 @@ angular.module('starter.controllers', ['firebase'])
   }
 })
 
-.controller('kidController', function($scope, $state, $firebaseArray, $firebaseObject, $ionicModal) {
+.controller('kidController', function($scope, $state, $firebaseArray, $firebaseObject, $ionicModal, alunoService) {
   console.log('kidController');
 
   $ionicModal.fromTemplateUrl('templates/editKid.html', {
@@ -122,20 +120,11 @@ angular.module('starter.controllers', ['firebase'])
         let aluno = $firebaseObject(alunoRef);
 
         aluno.$loaded().then(function(){
-          aluno.inadimplente = isInadimplente(mensalidades);
+          aluno.inadimplente = alunoService.isInadimplente(mensalidades, aluno.contratoVencimento);
           aluno.$save();
         })
       })
     });
-  }
-
-  function isInadimplente(mensalidades, done){
-
-    let mensalidadesPendentes = mensalidades.filter((mensalidade) => (!mensalidade.pago))
-
-    if(mensalidadesPendentes.length)
-       return true;
-    else return false;
   }
 
   $scope.closeKid = function(){

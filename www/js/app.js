@@ -30,6 +30,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     return alunos;
 
   }
+  //se a mensalidade nao esta paga e é menor que o dia do vencimento
+  //o aluno esta inadimplente
+  this.isInadimplente = function(mensalidades, vencimento){
+
+    return mensalidades.filter((mensalidade) => {
+      const dataMensalidade = new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0);
+      return (!mensalidade.pago) && (dataMensalidade < new Date())
+    }).length > 0
+  }
 })
 
 .service('periodoService', function($ionicLoading, $firebaseArray, $firebaseObject){
