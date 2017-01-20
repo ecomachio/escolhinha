@@ -50,13 +50,13 @@
           <div class="kidPaymentData card">
             <ion-checkbox ng-model="mensalidade.pago"
                 class="item-checkbox-right itemClass"
-                ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']:true"
+                ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']"
                 ng-change="pagaMensalidade(mensalidade)"
                 ng-class="{ inadimItemClass: !mensalidade.pago }">
               {{mensalidade.mes | converteMes }} {{mensalidade.ano}}
             </ion-checkbox>
           </div>
         </div>
-      </div>    
+      </div>
   </ion-content>
 </ion-modal-view>

@@ -284,7 +284,13 @@ angular.module('starter.controllers', ['firebase'])
   })
 })
 
-.controller('FotosController', function($scope, $ionicLoading, $firebaseObject, $firebaseArray, $ionicLoading, alunoService) {
+.controller('FotosController', function($scope, $ionicModal, $ionicLoading, $firebaseObject, $firebaseArray, $ionicLoading, alunoService) {
+
+    $ionicModal.fromTemplateUrl('templates/kid.html', {
+      scope: $scope
+    }).then(function(modalKid) {
+      $scope.modalKid = modalKid;
+    });
 
     $scope.loadAlunos = function loadAlunos() {
       $ionicLoading.show();
@@ -294,6 +300,22 @@ angular.module('starter.controllers', ['firebase'])
         $ionicLoading.hide();
       })
     }
+
+    $scope.openKid = function(aluno){
+
+      $scope.aluno = aluno;
+      var mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
+      mensalidades = $firebaseArray(mensalidadesRef);
+      mensalidades.$loaded().then(function() {
+        $scope.mensalidades = mensalidades;
+        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, aluno.contratoVencimento);
+      })
+
+      console.log($scope.aluno);
+
+      $scope.modalKid.show();
+    }
+
 
     $scope.countInadimplentes = function(){
       var cont = 0
@@ -341,6 +363,8 @@ angular.module('starter.controllers', ['firebase'])
 
     email = user.email;
     password = user.password;
+    //cadastrar novo usuario
+    //$scope.signUp(user);
 
     $ionicLoading.show();
 
@@ -367,7 +391,7 @@ angular.module('starter.controllers', ['firebase'])
 
   $scope.signUp = function(user){
 
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    firebase.auth().createUserWithEmailAndPassword(user.email, user.password).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;

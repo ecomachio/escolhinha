@@ -15,8 +15,9 @@
         <h4>Novembro - 2017</h4>
       </div>
       <div class="list card">
-        <a class="item item-avatar" ng-repeat="aluno in alunos">
-           <img src="img\max.png">
+        <a class="item item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos"
+        ng-class="{ inadimItemClass: aluno.inadimplente }">
+           <img src="img\kidplaceholder.jpg" />
            <h2>{{aluno.nome}}</h2>
            <p>{{aluno.responsavel}}</p>
         </a>

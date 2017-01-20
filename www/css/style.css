@@ -28,14 +28,6 @@
 	box-sizing: border-box;
 }
 
-.financeiro-wrapper .item:nth-child(odd){
-	border-right: 5px solid #ef473a;
-}
-
-.financeiro-wrapper .item:nth-child(even){
-	border-right: 5px solid #33cd5f;
-}
-
 .financeiro-period{
 	text-align: left;
 	margin: 25px 0 -15px 12px;

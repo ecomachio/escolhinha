@@ -7,17 +7,25 @@
   </ion-header-bar>
   <ion-content>
     <div class="list">
+      <div class="item item-divider">
+        <p>Dados cadastrais</p>
+      </div>
        <label class="item item-input">
-         <input type="text" placeholder="Nome" ng-model="aluno.nome">
+         <input type="text" placeholder="Nome" ng-model="aluno.nome" required>
        </label>
        <label class="item item-input">
-         <input type="text" placeholder="Responsavel" ng-model="aluno.responsavel">
+         <input type="text" placeholder="Responsavel" ng-model="aluno.responsavel" required>
        </label>
        <label class="item item-input">
-         <input type="text" placeholder="email" ng-model="aluno.email">
+         <input type="email" placeholder="email" ng-model="aluno.email" required>
        </label>
        <label class="item item-input">
-       <input type="text" placeholder="idade" ng-model="aluno.idade">
+       <input type="date" placeholder="Nascimento" ng-model="aluno.dataNascimento" required>
+       <p ng-show="alunoForm.email.$invalid && !alunoForm.email.$pristine"
+          class="help-block">Email inválido.</p>
+       </label>
+       <label class="item item-input">
+         <input type="tel" placeholder="Telefone" ng-model="aluno.telefone">
        </label>
       </div>
       <a class="cardMargin button button-block button-assertive" ng-click="remove(aluno)">Deletar Aluno</a>
