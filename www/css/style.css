@@ -221,6 +221,12 @@
 	top:33%;
 }
 
+input[type="range"]{
+	width: 100%;
+}
+select {
+	min-width: 40%
+}
 input[type="date"]:before {
 	content: attr(placeholder) !important;
 	color: #aaa;
@@ -229,6 +235,14 @@ input[type="date"]:before {
 input[type="date"]:focus:before,
 input[type="date"]:valid:before {
 	content: "" !important;
+}
+
+.mensalidades{
+	text-align: center;
+}
+
+.mensalidades .item-divider{
+	text-align: left;
 }
 
 .iconCustom{
@@ -253,8 +267,8 @@ input[type="date"]:valid:before {
 }*/
 .bar .button.button-fab.button-fab-bottom-right, .button.button-fab.button-fab-bottom-right {
     top: auto;
-    right: 20px;
-    bottom: 20px;
+    right: 30px;
+    bottom: 35px;
     left: auto;
     position: absolute;
 		border: none;

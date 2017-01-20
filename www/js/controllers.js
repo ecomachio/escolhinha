@@ -205,7 +205,9 @@ angular.module('starter.controllers', ['firebase'])
         responsavel: addAluno.responsavel,
         email: addAluno.email,
         inadimplente: true,
-        dataNascimento: "31/12/9999"
+        dataNascimento: addAluno.idadeDate,
+        contratoVigencia: addAluno.contratoVigencia,
+        contratoVencimento: addAluno.contratoVencimento
       }).then(function(ref){
         console.log("Aluno adicionado");
 
@@ -226,6 +228,7 @@ angular.module('starter.controllers', ['firebase'])
     addAluno.email = "";
     addAluno.dataNascimento = "";
     addAluno.idadeDate = "";
+    addAluno.contratoVigencia = null;
     return addAluno;
   }
 
@@ -235,7 +238,7 @@ angular.module('starter.controllers', ['firebase'])
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
-  $scope.closeAdd = function(addAluno){    
+  $scope.closeAdd = function(addAluno){
     if(addAluno){
       addAluno = limparAluno(addAluno);
     }
