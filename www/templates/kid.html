@@ -1,15 +1,13 @@
 <ion-modal-view ng-controller="kidController">
+  <ion-header-bar class="bar bar-header bar-balanced barCustom"
+                  ng-class="{ inadimHeaderClass: aluno.inadimplente }">
+    <button class="button button-clear button-top-left" ng-click="closeKid()">
+        <i class="icon icon-left ion-android-arrow-back"></i>
+    </button>
+    <p class="title">Perfil do aluno</p>
+  </ion-header-bar>
   <ion-content>
-    <ion-header-bar class="bar bar-header bar-balanced barCustom"
-                    ng-class="{ inadimHeaderClass: aluno.inadimplente }">
-      <button class="button button-clear button-top-left" ng-click="closeKid()">
-          <i class="icon icon-left ion-android-arrow-back"></i>
-      </button>
-      <p class="title">Perfil do aluno</p>
-    </ion-header-bar>
-    <ion-list>
       <div class="kidWrapper">
-        <div class="paymentLine"></div>
         <div class="kidRegistrationData" ng-class="{ inadimClass: aluno.inadimplente }">
           <i class="iconCustom icon ion-android-create"
                   ng-click="openEditKid()"></i>
@@ -33,7 +31,15 @@
           </div>
           <div class="infBlock">
             <p class="infLabel">Data de Nascimento</p>
-            <p class="inf">02/02/2006</p>
+            <p class="inf">{{aluno.dataNascimento | date:"MM/dd/yyyy"}}</p>
+          </div>
+          <div class="infBlock">
+            <p class="infLabel">Contrato</p>
+            <p class="inf">{{aluno.contratoVigencia}} Meses</p>
+          </div>
+          <div class="infBlock">
+            <p class="infLabel">Vencimento</p>
+            <p class="inf">Dia {{aluno.contratoVencimento}}</p>
           </div>
         </div>
         <div class="kidPaymentWrapper">
@@ -51,7 +57,6 @@
             </ion-checkbox>
           </div>
         </div>
-      </div>
-    </ion-list>
+      </div>    
   </ion-content>
 </ion-modal-view>

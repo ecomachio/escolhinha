@@ -195,7 +195,7 @@ angular.module('starter.controllers', ['firebase'])
     var ref = firebase.database().ref().child('aluno');
     alunos = $firebaseArray(ref);
 
-    addAluno.idade = _calculateAge(addAluno.idadeDate);
+    addAluno.idade = _calculateAge(addAluno.dataNascimento);
 
     console.log(alunos);
 
@@ -205,15 +205,17 @@ angular.module('starter.controllers', ['firebase'])
         responsavel: addAluno.responsavel,
         email: addAluno.email,
         inadimplente: true,
-        dataNascimento: addAluno.idadeDate,
+        dataNascimento: addAluno.dataNascimento.getTime(),
         contratoVigencia: addAluno.contratoVigencia,
-        contratoVencimento: addAluno.contratoVencimento
+        contratoVencimento: addAluno.contratoVencimento,
+        telefone: addAluno.telefone
       }).then(function(ref){
         console.log("Aluno adicionado");
 
+        adicionarMensalidade(ref.key, addAluno.contratoVigencia);
+
         addAluno = limparAluno(addAluno);
 
-        adicionarMensalidade(ref.key);
         $scope.modalAdd.hide();
         $ionicLoading.hide();
       }).catch(function(error){
@@ -227,8 +229,9 @@ angular.module('starter.controllers', ['firebase'])
     addAluno.responsavel = "";
     addAluno.email = "";
     addAluno.dataNascimento = "";
-    addAluno.idadeDate = "";
     addAluno.contratoVigencia = null;
+    addAluno.contratoVencimento = null;
+    addAluno.telefone = "";
     return addAluno;
   }
 
@@ -245,26 +248,31 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalAdd.hide();
   }
 
-  function adicionarMensalidade(key) {
+  function adicionarMensalidade(key, contratoVigencia) {
     console.log("adicionarMensalidade");
-    mensalidadesRef = firebase.database().ref().child('mensalidades');
-    mensalidades = $firebaseArray(mensalidadesRef);
+    let mensalidadesRef = firebase.database().ref().child('mensalidades');
+    let mensalidades = $firebaseArray(mensalidadesRef);
+    let d = new Date();
+    let mes = d.getMonth();
+    let ano = d.getFullYear();
 
-    per = periodoService.currentPeriodo();
-    var mes = per.substring(0,per.indexOf("/"));
-    var ano = per.substring(per.indexOf("/")+1, per.length)
-
-    console.log(per.substring(0,per.indexOf("\\")));
-    mensalidades.$add({
-      aluno: key,
-      periodo: per,
-      ano: ano,
-      mes: mes,
-      pago: false
-    })
-
+    console.log("contratoVigencia", contratoVigencia);
+    for (var i = 0; i < contratoVigencia; i++) {
+      mensalidades.$add({
+        aluno: key,
+        ano: ano,
+        mes: mes,
+        pago: false
+      }).then(function(){
+        console.log(i);
+      })
+      mes++;
+      if(mes > 12){
+        mes = 1;
+        ano++;
+      }
+    }
   }
-
 })
 
 .controller('SettingsController', function($scope, $state) {
