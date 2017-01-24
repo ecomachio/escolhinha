@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['firebase'])
 
-.controller('CadastroController', function($scope, $ionicModal, $ionicLoading, $firebaseObject, $firebaseArray, alunoService, periodoService) {
+.controller('CadastroController', function($scope, $rootScope, $ionicModal, $ionicLoading, $firebaseObject, $firebaseArray, alunoService, periodoService) {
   console.log("CadastroController");
   $ionicModal.fromTemplateUrl('templates/kid.html', {
     scope: $scope
@@ -14,8 +14,13 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalAdd = modalAdd;
   });
 
+  $rootScope.$on("loadAlunos", function(){
+     $scope.loadAlunos();
+  });
+
   $scope.loadAlunos = function loadAlunos() {
     $ionicLoading.show();
+    console.log(firebase.auth());
 
     alunoService.loadAlunos().$loaded().then(function(alunos){
       $scope.alunos = alunos;
@@ -94,7 +99,7 @@ angular.module('starter.controllers', ['firebase'])
   }
 })
 
-.controller('kidController', function($scope, $state, $firebaseArray, $firebaseObject, $ionicModal, alunoService) {
+.controller('kidController', function($scope, $state, $ionicPopup, $firebaseArray, $firebaseObject, $ionicModal, alunoService) {
   console.log('kidController');
 
   $ionicModal.fromTemplateUrl('templates/editKid.html', {
@@ -125,6 +130,48 @@ angular.module('starter.controllers', ['firebase'])
         })
       })
     });
+  }
+
+  $scope.showComprovantePopup = function(mensalidade) {
+
+    // An elaborate, custom popup
+    var comprovantePopup = $ionicPopup.show({
+      templateUrl: "templates/comprovantePopup.html",
+      title: 'Comprovante',      
+      scope: $scope,
+      buttons: [
+        { text: 'Voltar' }
+      ]
+    })
+
+    comprovantePopup.then(function(res) {
+      console.log('Tapped!', res);
+    });
+  }
+  $scope.share = function(t, msg, img, link){
+    console.log(window);
+     if(t == 'w')
+         window.plugins.socialsharing
+         .shareViaWhatsApp('Comprovante mensalidade 01/2017', '', link);
+     else if(t == 'f')
+         window.plugins.socialsharing
+         .shareViaFacebook(msg, img, link);
+     else if(t == 't')
+         window.plugins.socialsharing
+         .shareViaTwitter(msg, img, link);
+     else if(t == 'sms')
+         window.plugins.socialsharing
+         .shareViaSMS(msg+' '+img+' '+link);
+     else
+     {
+         var sub = 'Beautiful images inside ..';
+         window.plugins.socialsharing
+         .shareViaEmail(msg, sub, '');
+     }
+  }
+
+  $scope.gerarComprovante = function(mensalidade){
+
   }
 
   $scope.closeKid = function(){
@@ -269,19 +316,19 @@ angular.module('starter.controllers', ['firebase'])
   $scope.signOut = function(){
     console.log('aqui');
     firebase.auth().signOut().then(function() {
-      console.log("Sign-out successful");
+      $state.go('login');
     }, function(error) {
       console.log("An error happened");
     });
   }
-
+  /*
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       $state.go('tab.cadastro');
     }else{
       $state.go('login');
     }
-  })
+  })*/
 })
 
 .controller('FotosController', function($scope, $ionicModal, $ionicLoading, $firebaseObject, $firebaseArray, $ionicLoading, alunoService) {
@@ -338,7 +385,7 @@ angular.module('starter.controllers', ['firebase'])
 
 .controller('FavoritosController', function($scope) {})
 
-.controller('LoginController', function($scope, $state, $ionicLoading) {
+.controller('LoginController', function($scope, $rootScope, $state, $ionicLoading, alunoService) {
 
   $scope.user = {};
 
@@ -349,42 +396,55 @@ angular.module('starter.controllers', ['firebase'])
     firebase.auth().onAuthStateChanged(function(user) {
       console.log(user);
       if (user) {
+        $rootScope.$emit("loadAlunos", {});
+
         $state.go('tab.cadastro');
+        $ionicLoading.hide();
       }else{
         $state.go('login');
       }
     });
+
   }
 
   $scope.login = function(user){
 
+    $ionicLoading.show();
+
     var email = "";
     var password = "";
+
+    if((!user.email)||(!user.password)){
+      $ionicLoading.hide();
+      swal("Desculpe", "Login inválido", "error");
+      return;
+    }
 
     email = user.email;
     password = user.password;
     //cadastrar novo usuario
     //$scope.signUp(user);
 
-    $ionicLoading.show();
-
-    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .catch(function(error) {
+      $ionicLoading.hide();
+      swal("Desculpe", "Login inválido", "error")
 
       var errorCode = error.code;
       var errorMessage = error.message;
 
       console.log(errorCode);
+
+    }).then(() => {
       $ionicLoading.hide();
 
-    });
+      alunoService.loadAlunos().$loaded().then(function(alunos){
+        $rootScope.$emit("loadAlunos", {});
 
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        $ionicLoading.hide();
         $state.go('tab.cadastro');
-      }else{
-        $state.go('login');
-      }
+        $ionicLoading.hide();
+      })
+
     });
 
   }

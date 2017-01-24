@@ -42,6 +42,9 @@
             <p class="inf">Dia {{aluno.contratoVencimento}}</p>
           </div>
         </div>
+        <div class="tip">
+          <p>Mantenha um item pressionado para gerar um comprovante</p>
+        </div>
         <div class="kidPaymentWrapper">
           <div class="kidPaymentHeader">
             <p>Mês</p>
@@ -52,11 +55,13 @@
                 class="item-checkbox-right itemClass"
                 ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']"
                 ng-change="pagaMensalidade(mensalidade)"
-                ng-class="{ inadimItemClass: !mensalidade.pago }">
+                ng-class="{ inadimItemClass: !mensalidade.pago }"
+                on-hold="showComprovantePopup(mensalidade)">
               {{mensalidade.mes | converteMes }} {{mensalidade.ano}}
             </ion-checkbox>
           </div>
         </div>
       </div>
+
   </ion-content>
 </ion-modal-view>

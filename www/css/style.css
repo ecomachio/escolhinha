@@ -289,3 +289,19 @@ input[type="date"]:valid:before {
     -webkit-transition-property: -webkit-transform,box-shadow;
     transition-property: transform,box-shadow;
 }
+
+
+.comprovante i{
+	height: 70px;
+}
+.comprovante i::before{
+	font-size:60px !important;
+	line-height: 62px !important;
+}
+
+.tip{
+	width: 90%;
+	text-align: center;
+	color: #aaa;
+	margin: 0 auto;
+}
