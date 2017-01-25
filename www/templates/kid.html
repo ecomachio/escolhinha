@@ -41,16 +41,27 @@
             <p class="infLabel">Vencimento</p>
             <p class="inf">Dia {{aluno.contratoVencimento}}</p>
           </div>
+          <div class="infBlock">
+            <p class="infLabel">Valor</p>
+            <p class="inf">80,00 R$</p>
+          </div>
+          <div class="infBlock">
+            <p class="infLabel">Situação</p>
+            <p class="inf">Em atraso</p>
+          </div>
         </div>
         <div class="tip">
           <p>Mantenha um item pressionado para gerar um comprovante</p>
         </div>
         <div class="kidPaymentWrapper">
           <div class="kidPaymentHeader">
-            <p>Mês</p>
+            <p>Descrição</p>
             <p>Pago</p>
           </div>
           <div class="kidPaymentData card">
+            <div class="item item-divider">
+              <h3>Mensalidades</h3>
+            </div>
             <ion-checkbox ng-model="mensalidade.pago"
                 class="item-checkbox-right itemClass"
                 ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']"
@@ -58,6 +69,20 @@
                 ng-class="{ inadimItemClass: !mensalidade.pago }"
                 on-hold="showComprovantePopup(mensalidade)">
               {{mensalidade.mes | converteMes }} {{mensalidade.ano}}
+            </ion-checkbox>
+          </div>
+          <div class="kidPaymentData card">
+            <div class="item item-divider">
+              <h3>Eventos</h3>
+            </div>
+            <ion-checkbox on-hold="showComprovantePopup()" class="item-checkbox-right itemClass">
+              Torneio Copinha 12
+            </ion-checkbox>
+            <ion-checkbox on-hold="showComprovantePopup()" class="item-checkbox-right itemClass">
+              Torneio Mirim
+            </ion-checkbox>
+            <ion-checkbox on-hold="showComprovantePopup()" class="item-checkbox-right itemClass">
+              Matricula
             </ion-checkbox>
           </div>
         </div>
