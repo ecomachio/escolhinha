@@ -134,7 +134,7 @@
 
 .eventRegistrationData{
 	background-image: url("../img/a700.png");
-	background-size: contain;
+	background-size: cover;
 	height: 43vh;
 	padding-top:20px;
 	margin-top: -25px;
