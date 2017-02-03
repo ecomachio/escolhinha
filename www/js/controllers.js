@@ -99,7 +99,14 @@ angular.module('starter.controllers', ['firebase'])
   }
 })
 
-.controller('kidController', function($scope, $state, $ionicPopup, $firebaseArray, $firebaseObject, $ionicModal, alunoService) {
+.controller('eventController', function($scope, $state, $ionicPopup, $firebaseArray, $firebaseObject, $ionicModal, alunoService, $filter, $rootScope) {
+
+  $scope.closeEvent = function(){
+    $scope.modalEvent.hide();
+  }
+})
+
+.controller('kidController', function($scope, $state, $ionicPopup, $firebaseArray, $firebaseObject, $ionicModal, alunoService, $filter, $rootScope) {
   console.log('kidController');
 
   $ionicModal.fromTemplateUrl('templates/editKid.html', {
@@ -108,9 +115,23 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalEditKid = modalEditKid;
   });
 
-  $scope.openEditKid = function(){
+  $ionicModal.fromTemplateUrl('templates/event.html', {
+    scope: $scope
+  }).then(function(modalEvent) {
+    $scope.modalEvent = modalEvent;
+  });
+
+  $scope.openEditKid = function(aluno){
+    $scope.editAluno = angular.copy(aluno);
+    console.log(aluno.dataNascimento)
+    $scope.editAluno.dataNascimentoAux = new Date(aluno.dataNascimento);
     console.log("openEditKid;");
     $scope.modalEditKid.show();
+  }
+
+  $scope.openEvent = function(aluno){
+    console.log("openEvent;");
+    $scope.modalEvent.show();
   }
 
   $scope.pagaMensalidade = function(mensalidade){
@@ -132,12 +153,15 @@ angular.module('starter.controllers', ['firebase'])
     });
   }
 
-  $scope.showComprovantePopup = function(mensalidade) {
+  $scope.showComprovantePopup = function(mensalidade, aluno) {
+
+    $rootScope.aluno = aluno;
+    $rootScope.mensalidade = mensalidade;
 
     // An elaborate, custom popup
     var comprovantePopup = $ionicPopup.show({
       templateUrl: "templates/comprovantePopup.html",
-      title: 'Comprovante',      
+      title: 'Comprovante',
       scope: $scope,
       buttons: [
         { text: 'Voltar' }
@@ -148,11 +172,22 @@ angular.module('starter.controllers', ['firebase'])
       console.log('Tapped!', res);
     });
   }
-  $scope.share = function(t, msg, img, link){
-    console.log(window);
+
+  $scope.share = function(t, yy, img, link){
+
+    let msg = "Diprima recebeu de "
+              + $rootScope.aluno.responsavel +
+              " a quantia de "
+              + $filter('currency')($rootScope.aluno.valorMensalidade) +
+              " refenre a mensalidade "
+              + ($rootScope.mensalidade.mes + 1) + "/" + $rootScope.mensalidade.ano +
+              " Código de segurança: " + $rootScope.mensalidade.$id;
+
+     console.log(msg);
+
      if(t == 'w')
          window.plugins.socialsharing
-         .shareViaWhatsApp('Comprovante mensalidade 01/2017', '', link);
+         .shareViaWhatsApp(msg, '', link);
      else if(t == 'f')
          window.plugins.socialsharing
          .shareViaFacebook(msg, img, link);
@@ -180,7 +215,7 @@ angular.module('starter.controllers', ['firebase'])
 
 })
 
-.controller('editKidController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray, periodoService) {
+.controller('editKidController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray, periodoService, alunoService) {
 
   $scope.closeEditKid = function(){
     $scope.modalEditKid.hide();
@@ -192,15 +227,31 @@ angular.module('starter.controllers', ['firebase'])
     return res.$loaded();
   }
 
-  $scope.save = function(aluno){
-    getAluno(aluno).then(function(aluno){
-      aluno.$save()
-      .then(function(){
-        console.log("Aluno alterado");
-        $scope.modalEditKid.hide();
-      })
-      .catch(function(err){
-        console.log("Erro ao alterar MSG", err);
+  $scope.save = function(editAluno){
+
+    getAluno(editAluno).then(function(aluno){
+      alunoService.isInadimplenteByAluno(editAluno).then((isInadimplenteResolved) => {
+        aluno.inadimplente = isInadimplenteResolved;
+        aluno.nome = editAluno.nome;
+        aluno.idade = editAluno.idade;
+        aluno.responsavel = editAluno.responsavel;
+        aluno.email = editAluno.email;
+        aluno.dataNascimento = editAluno.dataNascimento;
+        aluno.contratoVigencia = editAluno.contratoVigencia;
+        aluno.contratoVencimento = editAluno.contratoVencimento;
+        aluno.telefone = editAluno.telefone;
+        aluno.valorMensalidade = editAluno.valorMensalidade;
+
+        aluno.$save()
+        .then(function(){
+          console.log(aluno);
+          console.log("Aluno alterado");
+          $scope.aluno = aluno;
+          $scope.modalEditKid.hide();
+        })
+        .catch(function(err){
+          console.log("Erro ao alterar MSG", err);
+        })
       })
     })
   }
@@ -244,7 +295,8 @@ angular.module('starter.controllers', ['firebase'])
         dataNascimento: addAluno.dataNascimento.getTime(),
         contratoVigencia: addAluno.contratoVigencia,
         contratoVencimento: addAluno.contratoVencimento,
-        telefone: addAluno.telefone
+        telefone: addAluno.telefone,
+        valorMensalidade: addAluno.valorMensalidade
       }).then(function(ref){
         console.log("Aluno adicionado");
 

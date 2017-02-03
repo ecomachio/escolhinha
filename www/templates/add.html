@@ -7,15 +7,15 @@
   </ion-header-bar>
   <ion-content>
     <form name="alunoForm" ng-submit="add(addAluno)" novalidate ng-model="addAluno">
-      <div class="list">
+      <div class="list addAlunoWrapper">
         <div class="item item-divider">
           <p>Dados cadastrais</p>
         </div>
          <label class="item item-input">
-           <input type="text" placeholder="Nome" ng-model="addAluno.nome" required>
+           <input type="text" placeholder="Nome" ng-model="addAluno.nome" required maxlength="40">
          </label>
          <label class="item item-input">
-           <input type="text" placeholder="Responsavel" ng-model="addAluno.responsavel" required>
+           <input type="text" placeholder="Responsavel" ng-model="addAluno.responsavel" required maxlength="40">
          </label>
          <label class="item item-input">
            <input type="email" placeholder="email" ng-model="addAluno.email" required>
@@ -54,6 +54,14 @@
               <p>Vencimento</p>
             </div>
           </label>
+          <label class="item item-input">
+            <div class="input-label">
+              <p>Valor</p>
+            </div>
+            <input type="number" required pattern="-?(\d+|\d+\.\d+|\.\d+)([eE][-+]?\d+)?"
+             ng-model="addAluno.valorMensalidade" placeholder="R$ 0.00"
+             value="addAluno.valorMensalidade | currency">
+          </label>
         </div>
       </div>
       <a type="submit"
@@ -62,6 +70,6 @@
               ng-click="add(addAluno)">
               Adicionar aluno
       </a>
-    </form>
+
   </ion-content>
 </ion-modal-view>

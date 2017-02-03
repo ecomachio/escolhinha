@@ -4,13 +4,16 @@
     <button class="button button-clear button-top-left" ng-click="closeKid()">
         <i class="icon icon-left ion-android-arrow-back"></i>
     </button>
-    <p class="title">Perfil do aluno</p>
+    <div class="kidActions">
+      <i class="iconCustom icon ion-trophy"
+              ng-click="openEvent(aluno)"></i>
+      <i class="iconCustom icon ion-android-create"
+              ng-click="openEditKid(aluno)"></i>      
+    </div>
   </ion-header-bar>
   <ion-content>
       <div class="kidWrapper">
         <div class="kidRegistrationData" ng-class="{ inadimClass: aluno.inadimplente }">
-          <i class="iconCustom icon ion-android-create"
-                  ng-click="openEditKid()"></i>
           <div class="mainKidRegistrationData">
             <img src="img\kidplaceholder.jpg">
             <h5>{{aluno.nome}}</h5>
@@ -22,12 +25,12 @@
             <p class="inf">{{aluno.responsavel}}</p>
           </div>
           <div class="infBlock">
-            <p class="infLabel">Idade</p>
-            <p class="inf">{{aluno.idade}}</p>
-          </div>
-          <div class="infBlock">
             <p class="infLabel">Telefone</p>
             <p class="inf">{{aluno.telefone}}</p>
+          </div>
+          <div class="infBlock">
+            <p class="infLabel">Idade</p>
+            <p class="inf">{{aluno.idade}}</p>
           </div>
           <div class="infBlock">
             <p class="infLabel">Data de Nascimento</p>
@@ -43,11 +46,11 @@
           </div>
           <div class="infBlock">
             <p class="infLabel">Valor</p>
-            <p class="inf">80,00 R$</p>
+            <p class="inf">{{aluno.valorMensalidade | currency}}</p>
           </div>
           <div class="infBlock">
             <p class="infLabel">Situação</p>
-            <p class="inf">Em atraso</p>
+            <p class="inf">{{aluno.inadimplente ? "Em atraso" : "Em dia"}}</p>
           </div>
         </div>
         <div class="tip">
@@ -67,15 +70,15 @@
                 ng-repeat="mensalidade in mensalidades | orderBy:['ano','mes']"
                 ng-change="pagaMensalidade(mensalidade)"
                 ng-class="{ inadimItemClass: !mensalidade.pago }"
-                on-hold="showComprovantePopup(mensalidade)">
+                on-hold="showComprovantePopup(mensalidade, aluno)">
               {{mensalidade.mes | converteMes }} {{mensalidade.ano}}
             </ion-checkbox>
           </div>
           <div class="kidPaymentData card">
-            <div class="item item-divider">
+            <div class="item item-divider textWhite">
               <h3>Eventos</h3>
             </div>
-            <ion-checkbox on-hold="showComprovantePopup()" class="item-checkbox-right itemClass">
+            <ion-checkbox on-hold="showComprovantePopup(mensalidade, aluno)" class="item-checkbox-right itemClass">
               Torneio Copinha 12
             </ion-checkbox>
             <ion-checkbox on-hold="showComprovantePopup()" class="item-checkbox-right itemClass">

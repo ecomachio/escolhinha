@@ -1,0 +1,58 @@
+<ion-modal-view ng-controller="eventController">
+  <ion-header-bar class="bar bar-header bar-event barCustom">
+    <button class="button button-clear button-top-left" ng-click="closeEvent()">
+        <i class="icon icon-left ion-android-arrow-back"></i>
+    </button>
+    <p class="title">Eventos</p>
+  </ion-header-bar>
+  <ion-content>
+      <div class="kidWrapper">
+        <div class="eventRegistrationData">
+          <div class="mainEventRegistrationData">
+            <!-- <img src="img\trophy.png"> -->
+          </div>
+        </div>
+        <div class="otherInf--space-around card">
+          <div class="infBlockFull">
+            <a class="cardMargin button button-block button-energized"
+                    ng-disabled="alunoForm.$invalid"
+                    ng-click="add(addAluno)">
+                    Adicionar Evento
+            </a>
+          </div>
+          <div class="infBlockFull">
+            <a class="cardMargin button button-block button-energized"
+                    ng-disabled="alunoForm.$invalid"
+                    ng-click="add(addAluno)">
+                    Informações
+            </a>
+          </div>
+        </div>
+        <div class="tip">
+          <p>Nesta seção é possivel adcionar eventos personalizados ao aluno, como por exemplo,
+            torneios, rematricula entre outros.</p>
+        </div>
+        <div class="kidPaymentWrapper">
+          <div class="kidPaymentHeader">
+            <p>Eventos do aluno</p>
+            <p>Pago</p>
+          </div>
+          <div class="kidPaymentData card">
+            <ion-checkbox 
+                class="item-checkbox-right itemClass">
+                Gauchaozinho
+            </ion-checkbox>
+            <ion-checkbox
+                class="item-checkbox-right itemClass">
+                Torneio mirim
+            </ion-checkbox>
+            <ion-checkbox
+                class="item-checkbox-right itemClass">
+                Rematricula
+            </ion-checkbox>
+          </div>
+        </div>
+      </div>
+
+  </ion-content>
+</ion-modal-view>

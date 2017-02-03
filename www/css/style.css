@@ -110,7 +110,7 @@
 }
 
 .kidPaymentHeader{
-	
+
 	font-weight: bold;
 	display: flex;
 	justify-content: space-between;
@@ -123,13 +123,26 @@
 }
 
 .kidRegistrationData{
-	height: 40vh;
+	height: 45vh;
 	background: #33cd5f;
-	padding: 10px 20px 20px 20px;
+	padding: 20px 20px 20px 20px;
 	color: white;
 	position: relative;
 	z-index: 9;
 	transition: all 250ms ease-in-out;
+}
+
+.eventRegistrationData{
+	background-image: url("../img/a700.png");
+	background-size: contain;
+	height: 43vh;
+	padding-top:20px;
+	margin-top: -25px;
+}
+
+.bar-event{
+	background: #1565C0;
+	color: #fff;
 }
 
 .itemClass{
@@ -157,6 +170,17 @@
 	align-items: center;
 	justify-content: space-around;
 	height: 80%;
+	text-align: center;
+}
+
+.mainEventRegistrationData{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+	justify-content: space-around;
+	height: 80%;
+	text-align: center;
 }
 
 .kidRegistrationData img{
@@ -174,7 +198,7 @@
 	margin-top: -15%;
 	display: flex;
 	flex-direction: row;
-	justify-content: space-around;
+	justify-content: space-between;
 	flex-wrap: wrap;
 	padding: 20px;
 	position: relative;
@@ -183,6 +207,22 @@
 
 .otherInf .infBlock{
 	min-width: 50%;
+}
+
+.otherInf--space-around{
+	margin-top: -11%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	padding: 5px;
+	position: relative;
+	z-index: 10;
+}
+
+
+.otherInfFull .infBlockFull{
+	min-width: 100%;
 }
 
 .otherInf .infBlock .infLabel{
@@ -195,6 +235,11 @@
 
 .barCustom{
 	transition: all 200ms ease-in-out;
+	color:#fff;
+}
+
+.bar-event .button.button-clear{
+	color: #fff;
 }
 
 .barCustom .title{
@@ -228,7 +273,7 @@ input[type="date"]:valid:before {
 }
 
 .mensalidades{
-	text-align: center;
+
 }
 
 .mensalidades .item{
@@ -239,17 +284,28 @@ input[type="date"]:valid:before {
 	min-width: 80px;
 }
 
+.textWhite{
+	color:white !important;
+}
+
 .mensalidades .item-divider{
 	text-align: left;
 }
 
-.iconCustom{
+.kidActions{
 	position: absolute;
-	right: 5%;
-	top: 5%;
+	right: 1%;
+	top: 20%;
+	z-index: 5;
+	display: flex;
+	justify-content: space-between;
+	width: 80px;
+}
+
+.iconCustom{
 	color: white;
 	font-size: 200%;
-	z-index: 5;
+	width: 30px
 }
 
 .kidPlaceHolder{
@@ -291,6 +347,9 @@ input[type="date"]:valid:before {
     transition-property: transform,box-shadow;
 }
 
+.addAlunoWrapper{
+	text-align: left;
+}
 
 .comprovante i{
 	height: 70px;

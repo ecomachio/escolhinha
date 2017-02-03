@@ -23,6 +23,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 })
 
 .service('alunoService', function($ionicLoading, $firebaseArray){
+  let self = this;
+
   this.loadAlunos = function loadAlunos() {
 
     var alunosRef = firebase.database().ref().child('aluno');
@@ -30,15 +32,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     return alunos;
 
   }
+
+  this.isInadimplenteByAluno = (aluno) => {
+    let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
+    let mensalidades = $firebaseArray(mensalidadesRef);
+    return mensalidades.$loaded().then((mensalidades) => self.isInadimplente(mensalidades, aluno.contratoVencimento));
+
+  }
   //se a mensalidade nao esta paga e é menor que o dia do vencimento
   //o aluno esta inadimplente
-  this.isInadimplente = function(mensalidades, vencimento){
+  this.isInadimplente = (mensalidades, vencimento) =>
+    mensalidades.filter((mensalidade) =>
+      (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())).length > 0
 
-    return mensalidades.filter((mensalidade) => {
-      const dataMensalidade = new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0);
-      return (!mensalidade.pago) && (dataMensalidade < new Date())
-    }).length > 0
-  }
 })
 
 .service('periodoService', function($ionicLoading, $firebaseArray, $firebaseObject){
