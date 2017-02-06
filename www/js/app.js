@@ -37,13 +37,23 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
     let mensalidades = $firebaseArray(mensalidadesRef);
     return mensalidades.$loaded().then((mensalidades) => self.isInadimplente(mensalidades, aluno.contratoVencimento));
-
   }
-  //se a mensalidade nao esta paga e é menor que o dia do vencimento
+
+  //verifica inadimplendia de uma unica mensalidade 
+  this.isInadimplenteByMonth = (mensalidade) =>  
+      (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())
+
+  //se a mensalidade do aluno nao esta paga e é menor que o dia do vencimento
   //o aluno esta inadimplente
   this.isInadimplente = (mensalidades, vencimento) =>
-    mensalidades.filter((mensalidade) =>
-      (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())).length > 0
+    mensalidades.filter((mensalidade) => {
+      console.log("INADIPLENTE FUNCTION");
+      console.log("MENSALIDADE NAO PAGA ", (mensalidade.mes));
+      console.log("DATA DE VENCIMENTO MENOR ", (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date()));
+      console.log("vencimento", vencimento);
+      console.log((!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date()))
+      return (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())
+    }).length > 0
 
 })
 
@@ -173,8 +183,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             break;
         default:
           mes ="Dezembro"
-      }
-      console.log(n, mes);
+      }      
       return mes;
 
     }

@@ -1,7 +1,7 @@
 <ion-view view-title="Cadastro" ng-init="loadAlunos()">
   <ion-content class="cadastro-wrapper">
     <div class="list card">
-      <a class="item item-avatar" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos|orderBy:aluno.$id:true">
+      <a class="item item-avatar" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos|orderBy:'$id':true">
          <img src="img\kidplaceholder.jpg" />
          <h2>{{aluno.nome}}</h2>
          <p>{{aluno.responsavel}}</p>

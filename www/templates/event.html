@@ -14,17 +14,16 @@
         </div>
         <div class="otherInf--space-around card">
           <div class="infBlockFull">
-            <a class="cardMargin button button-block button-energized"
-                    ng-disabled="alunoForm.$invalid"
+            <a class="cardMargin button button-block button-energized"                    
                     ng-click="add(addAluno)">
                     Adicionar Evento
             </a>
           </div>
           <div class="infBlockFull">
             <a class="cardMargin button button-block button-energized"
-                    ng-disabled="alunoForm.$invalid"
+                    ng-disabled="!event.check"
                     ng-click="add(addAluno)">
-                    Informações
+                    Alterar Evento
             </a>
           </div>
         </div>
@@ -34,20 +33,20 @@
         </div>
         <div class="kidPaymentWrapper">
           <div class="kidPaymentHeader">
-            <p>Eventos do aluno</p>
-            <p>Pago</p>
+            <p>Eventos do aluno</p>            
           </div>
           <div class="kidPaymentData card">
             <ion-checkbox 
-                class="item-checkbox-right itemClass">
+                ng-model="event.check"
+                class="item-checkbox-right">
                 Gauchaozinho
             </ion-checkbox>
             <ion-checkbox
-                class="item-checkbox-right itemClass">
+                class="item-checkbox-right">
                 Torneio mirim
             </ion-checkbox>
             <ion-checkbox
-                class="item-checkbox-right itemClass">
+                class="item-checkbox-right">
                 Rematricula
             </ion-checkbox>
           </div>

@@ -237,8 +237,8 @@ angular.module('starter.controllers', ['firebase'])
         aluno.responsavel = editAluno.responsavel;
         aluno.email = editAluno.email;
         aluno.dataNascimento = editAluno.dataNascimento;
-        aluno.contratoVigencia = editAluno.contratoVigencia;
-        aluno.contratoVencimento = editAluno.contratoVencimento;
+        aluno.contratoVigencia = editAluno.contratoVigencia;        
+        aluno.contratoVencimento = parseInt(editAluno.contratoVencimento);
         aluno.telefone = editAluno.telefone;
         aluno.valorMensalidade = editAluno.valorMensalidade;
 
@@ -355,8 +355,8 @@ angular.module('starter.controllers', ['firebase'])
         console.log(i);
       })
       mes++;
-      if(mes > 12){
-        mes = 1;
+      if(mes > 11){
+        mes = 0;
         ano++;
       }
     }
@@ -393,9 +393,15 @@ angular.module('starter.controllers', ['firebase'])
 
     $scope.loadAlunos = function loadAlunos() {
       $ionicLoading.show();
-      alunoService.loadAlunos().$loaded().then(function(){
+
+      alunoService.loadAlunos().$loaded().then(function(alunos){        
+        //buildFinancePeriods($scope.alunos);
+        
+        //$scope.overdueAmounts = alunos.map(aluno.valorMensalidade);
         $scope.alunos = alunoService.loadAlunos();
-        $scope.inadimplentes = $scope.countInadimplentes();
+        console.log($scope.alunos);        
+        console.log($scope.overdueAmounts);
+        $scope.countInadimplentes(alunos);
         $ionicLoading.hide();
       })
     }
@@ -416,21 +422,42 @@ angular.module('starter.controllers', ['firebase'])
     }
 
 
-    $scope.countInadimplentes = function(){
-      var cont = 0
-      var alunos = $scope.alunos;
+    $scope.countInadimplentes = function(alunos){            
+      $scope.inadimplentes = "...";      
+      $scope.inadimplentes = alunos.filter((aluno) => aluno.inadimplente).length;            
+      $scope.overdueAmounts = alunos.reduce((amount, aluno) => 
+        (aluno.inadimplente) ? amount + aluno.valorMensalidade : amount + 0, 0);
+    }
 
-      $scope.inadimplentes = "...";
+    /*
+     * Metodo nao utilizado
+     */
+    function buildFinancePeriods(alunos){
 
-      //todos os alunos
-      alunos.$loaded().then(function(){
-        console.log(alunos);
-        for (var i = 0; i < alunos.length; i++) {
-          if(alunos[i].inadimplente)
-            cont++;
-        }
-        console.log(cont);
-        $scope.inadimplentes = cont;
+      let mensalidadesRef = firebase.database().ref().child('mensalidades');
+      let mensalidades = $firebaseArray(mensalidadesRef);
+      mensalidades.$loaded().then(function() {      
+
+        let financePeriodHeader = mensalidades.reduce((f, mensalidade, currentIndex) => {         
+
+          if(f.length == 0)
+            f.push({
+                ano: mensalidade.ano,
+                mes: mensalidade.mes,
+                alunos: []
+              });
+
+          else if(f.filter((item) => ((item.mes == mensalidade.mes)&&(item.ano == mensalidade.ano))).length == 0){            
+
+            f.push({
+              ano: mensalidade.ano,
+              mes: mensalidade.mes,
+              alunos: []
+            });
+          }
+
+          return f;
+        }, [])        
       })
     }
 })
@@ -514,3 +541,4 @@ angular.module('starter.controllers', ['firebase'])
   }
 
 });
+

@@ -6,22 +6,65 @@
   <ion-content class="main">
     <div class="financeiro-wrapper">
       <div class="financeiro-data" >
-          <i class="iconCustom icon ion-android-refresh"
-          ng-click="countInadimplentes()"></i>
-          <h3>Alunos pendentes</h3>
-          <h1>{{inadimplentes}}</h1>
+          <i class="iconCustom financeIcon  icon ion-android-refresh"
+          ng-click="countInadimplentes(alunos)"></i>
+          <h3>Valor em atraso</h3>
+          <h1>{{overdueAmounts | currency}}</h1>
+          <h3>Alunos pendentes: {{inadimplentes}}</h3>          
       </div>
-      <div class="financeiro-period">
-        <h4>Novembro - 2017</h4>
-      </div>
-      <div class="list card">
-        <a class="item item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos"
+      <div class="financeiro-period"
+           ng-show="(alunos | filter : {inadimplente:true}).length > 0"> 
+        <h4>Em atraso</h4>
+      </div> 
+      <p class="financePlaceHolder tip" ng-show="(alunos | filter : {inadimplente:true}).length == 0">Nenhum aluno em atraso</p>      
+
+      <div class="list financeAlunos card" ng-show="(alunos | filter : {inadimplente:true}).length > 0">      
+        <a class="item financeItem item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos" ng-if="aluno.inadimplente"
         ng-class="{ inadimItemClass: aluno.inadimplente }">
-           <img src="img\kidplaceholder.jpg" />
-           <h2>{{aluno.nome}}</h2>
-           <p>{{aluno.responsavel}}</p>
+          <img src="img\kidplaceholder.jpg" />
+          <h2 class="title">{{aluno.nome}}</h2>
+          <div class="financeInfBlock">
+            <div class="financeInf">
+              <p class="infLabel">Resposável</p>
+              <p class="inf"> {{aluno.responsavel}}</p>
+            </div>
+            <div class="financeInf">
+              <p class="infLabel">Valor</p>
+              <p class="inf"> {{aluno.valorMensalidade | currency}}</p>
+            </div>
+            <div class="financeInf">
+              <p class="infLabel">Vencimento</p>
+              <p class="inf">Dia {{aluno.contratoVencimento}}</p>              
+            </div>
+          </div>
         </a>
        </div>
+     </div>
+     <div class="financeiro-period"
+          ng-show="(alunos | filter : {inadimplente:false}).length > 0"> 
+        <h4>Em dia</h4>
+      </div> 
+     <p class="financePlaceHolder tip" ng-show="(alunos | filter : {inadimplente:false}).length == 0">Nenhum aluno em dia</p>      
+     <div class="list card" ng-show="(alunos | filter : {inadimplente:false}).length > 0">        
+        <a class="item item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos" ng-if="!aluno.inadimplente"
+        ng-class="{ inadimItemClass: aluno.inadimplente }">
+          <img src="img\kidplaceholder.jpg" />
+          <h2 class="title">{{aluno.nome}}</h2>
+          <div class="financeInfBlock">
+            <div class="financeInf">
+              <p class="infLabel">Resposável</p>
+              <p class="inf"> {{aluno.responsavel}}</p>
+            </div>
+            <div class="financeInf">
+              <p class="infLabel">Valor</p>
+              <p class="inf"> {{aluno.valorMensalidade | currency}}</p>
+            </div>
+            <div class="financeInf">
+              <p class="infLabel">Vencimento</p>
+              <p class="inf">Dia {{aluno.contratoVencimento}}</p>              
+            </div>
+          </div>
+        </a>
      </div>
   </ion-content>
 </ion-view>
