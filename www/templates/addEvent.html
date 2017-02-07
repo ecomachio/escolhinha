@@ -1,0 +1,37 @@
+<ion-modal-view ng-controller="addEventController">
+  <ion-header-bar class="bar bar-header bar-event barCustom">
+    <button class="button button-clear button-top-left" ng-click="closeAddEvent(event)">
+        <i class="icon icon-left ion-android-arrow-back"></i>
+    </button>
+    <p class="title">Adicionar evento</p>
+  </ion-header-bar>
+  <ion-content>
+    <form name="eventForm" ng-submit="add(event)" novalidate ng-model="event">
+      <div class="list event">
+        <div class="item item-divider">
+          <p>Dados evento</p>
+        </div>    
+        <label class="item item-input">
+          <input type="text" placeholder="Descrição" ng-model="event.nome" required maxlength="40">
+        </label>                                                                  
+        <label class="item item-input">
+          <div class="input-label">
+            <p>Valor do evento</p>
+          </div>
+          <input type="number" required pattern="-?(\d+|\d+\.\d+|\.\d+)([eE][-+]?\d+)?"
+                 ng-model="renewEvent.valorMensalidade" placeholder="R$ 0.00"
+                 value="renewEvent.valorMensalidade | currency">
+        </label>         
+        <label class="item item-input">
+           <input type="date" placeholder="Data de inicio" ng-model="addAluno.dataNascimento" required>            
+        </label>        
+      </div>      
+      <a type="submit"
+              class="cardMargin button button-block button-energized"
+              ng-disabled="eventForm.$invalid"
+              ng-click="addEvent(event)">
+              Adicionar evento
+      </a>
+    </form>
+  </ion-content>
+</ion-modal-view>

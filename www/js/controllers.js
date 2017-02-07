@@ -101,8 +101,123 @@ angular.module('starter.controllers', ['firebase'])
 
 .controller('eventController', function($scope, $state, $ionicPopup, $firebaseArray, $firebaseObject, $ionicModal, alunoService, $filter, $rootScope) {
 
+  $ionicModal.fromTemplateUrl('templates/addEvent.html', {
+    scope: $scope
+  }).then(function(modalAddEvent) {
+    $scope.modalAddEvent = modalAddEvent;
+  });
+
+  $ionicModal.fromTemplateUrl('templates/renewContract.html', {
+    scope: $scope
+  }).then(function(modalRenewContract) {
+    $scope.modalRenewContract = modalRenewContract;
+  });
+
   $scope.closeEvent = function(){
     $scope.modalEvent.hide();
+  }
+
+  $scope.addEvent = function(){
+    $scope.modalAddEvent.show();
+  }
+
+  $scope.openRenewContract = function(){
+    $scope.$emit("checkIfCanRenew", {});             
+    $scope.modalRenewContract.show();
+  }
+})
+
+.controller('addEventController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray, periodoService) {
+
+  $scope.closeAddEvent = function(){
+    $scope.modalAddEvent.hide();
+  }
+
+  $scope.addEvent = function(event){
+    console.log(event);
+  }
+
+})
+
+.controller('renewContractController', function($scope, $rootScope, $state, $ionicLoading, $firebaseObject, $firebaseArray, alunoService) {
+
+  $scope.closeRenewContract = function(){
+    $scope.modalRenewContract.hide();
+  }
+
+  $scope.saveRenewContract = function(renewMensalidade, renewEvent){
+    console.log(renewMensalidade, renewEvent, $scope.aluno);
+
+    const idAluno = $scope.aluno.$id;        
+    adicionarNovasMensalidades(idAluno, renewMensalidade.contratoVigencia, renewEvent.dataInicio.getTime());
+    adcionarEventoRematricula(idAluno, renewEvent).then(() => {
+      swal('Tudo pronto', 'Rematricula adicionada aos eventos');
+      $scope.modalRenewContract.hide();   
+    })
+  }
+
+  $scope.checkIfCanRenew = function(){
+    alunoService.isTodasMensalidadesPagas($scope.aluno).then((isMensalidadesPagas) => {      
+      if(!isMensalidadesPagas){
+        swal("Opa!", "Aluno com contrato ativo", "error");
+        $scope.modalRenewContract.hide();     
+      } 
+    })
+  }
+
+ $rootScope.$on("checkIfCanRenew", function(){
+    $scope.checkIfCanRenew();    
+ })  
+
+  function adcionarEventoRematricula(idAluno, renewEvent){
+
+    let eventosRef = firebase.database().ref().child('eventos').orderByChild('aluno').equalTo(idAluno);
+    let eventos = $firebaseArray(eventosRef);
+
+    return eventos.$add({      
+      aluno: idAluno,
+      desc: "rematricula",
+      dataInicio: renewEvent.dataInicio.getTime(),
+      valor: renewEvent.valor,
+      pago: false
+    });
+
+  }
+
+  function adicionarNovasMensalidades(idAluno, contratoVigencia, dataInicioRematricula) {
+    
+    let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(idAluno);
+    let mensalidades = $firebaseArray(mensalidadesRef);
+    let d = new Date(dataInicioRematricula); // data inicio da rematricula    
+    
+    mensalidades.$loaded().then((mensalidades) => {
+      
+      const sortedMensalidades = mensalidades.sort((a,b) => 
+        new Date(a.ano, a.mes, 0, 0, 0, 0, 0).getTime() - new Date(b.ano, b.mes, 0, 0, 0, 0, 0).getTime());
+      
+      const lastMensalidade = sortedMensalidades[sortedMensalidades.length - 1];
+      let mes = lastMensalidade.mes + 1;
+      let ano = lastMensalidade.ano;
+
+      if(mes > 11){
+          mes = 0;
+          ano++;
+      }
+
+      for (var i = 0; i < contratoVigencia; i++) {
+        mensalidades.$add({
+          aluno: idAluno,
+          ano: ano,
+          mes: mes,
+          pago: false
+        })
+        mes++;
+        if(mes > 11){
+          mes = 0;
+          ano++;
+        }
+      }
+    })    
   }
 })
 

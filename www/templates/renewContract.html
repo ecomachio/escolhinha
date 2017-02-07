@@ -1,0 +1,63 @@
+<ion-modal-view ng-controller="renewContractController">
+  <ion-header-bar class="bar bar-header bar-event barCustom">
+    <button class="button button-clear button-top-left" ng-click="closeRenewContract()">
+        <i class="icon icon-left ion-android-arrow-back"></i>
+    </button>
+    <p class="title">Rematricula</p>
+  </ion-header-bar>
+  <ion-content>
+    <form name="eventForm" ng-submit="add(event)" novalidate ng-model="event">
+      <div class="list event">        
+        <div class="item item-divider">
+          <p>Dados evento</p>
+        </div>    
+        <label class="item item-input">
+           <input type="text" class="removeBackground" value="Rematricula" required maxlength="40" readonly="true">
+        </label>            
+        <label class="item item-input">
+          <div class="input-label">
+            <p>Valor da rematricula</p>
+          </div>
+          <input type="number" required pattern="-?(\d+|\d+\.\d+|\.\d+)([eE][-+]?\d+)?"
+                 ng-model="renewEvent.valor" placeholder="R$ 0.00"
+                 value="renewEvent.valor | currency">
+        </label>         
+        <label class="item item-input">
+           <input type="date" placeholder="Data de inicio" ng-model="renewEvent.dataInicio" required>            
+        </label>
+        <div class="item item-divider">
+           <p>Novas mensalidades</p>
+        </div>
+        <div class="item range">
+          <p ng-if="!renewMensalidade.contratoVigencia">Quantidade</p>
+          <p class="pAuxMes" ng-if="renewMensalidade.contratoVigencia == 1">
+            {{renewMensalidade.contratoVigencia}} Mês
+          </p>
+          <p class="pAuxMes" ng-if="renewMensalidade.contratoVigencia && renewMensalidade.contratoVigencia != 1">
+            {{renewMensalidade.contratoVigencia}} Meses
+          </p>
+          <input type="range"
+                 name="contratoVigencia" min="1" max="24" value="12"
+                 ng-model="renewMensalidade.contratoVigencia" required>          
+        </div>
+        <label class="item item-input">
+            <div class="input-label">
+              <p>Valor mensal</p>
+            </div>
+            <input type="number" required pattern="-?(\d+|\d+\.\d+|\.\d+)([eE][-+]?\d+)?"
+                   ng-model="renewMensalidade.valorMensalidade" placeholder="R$ 0.00"
+                   value="renewMensalidade.valorMensalidade | currency">
+        </label>         
+      </div>
+      <div class="tip tipPadding">
+        <p>Serão adcionados ao aluno um evento de rematricula e as novas mensalidades</p>
+      </div>        
+      <a type="submit"
+              class="cardMargin button button-block button-energized"
+              ng-disabled="eventForm.$invalid"
+              ng-click="saveRenewContract(renewMensalidade, renewEvent)">
+              Adicionar evento
+      </a>
+    </form>
+  </ion-content>
+</ion-modal-view>

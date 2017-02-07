@@ -32,29 +32,7 @@
              <div class="mensalidades list">
                <div class="item item-divider">
                  <p>Contrato</p>
-               </div>
-               <div class="item range">
-                 <p ng-if="!editAluno.contratoVigencia">Vigência</p>
-                 <p class="pAuxMes" ng-if="editAluno.contratoVigencia == 1">
-                   {{editAluno.contratoVigencia}} Mês
-                 </p>
-                 <p class="pAuxMes" ng-if="editAluno.contratoVigencia && editAluno.contratoVigencia != 1">
-                   {{editAluno.contratoVigencia}} Meses
-                 </p>
-                 <input type="range"
-                        name="contratoVigencia" min="1" max="24" value="12"
-                        ng-model="editAluno.contratoVigencia" required>
-              </div>
-              <label class="item item-input item-select">
-                <select ng-model="editAluno.contratoVencimento" name="vencimento" required value="editAluno.contratoVencimento">
-                  <option ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]">
-                    {{n}}
-                  </option>
-                </select>
-                <div class="input-label">
-                  <p>Vencimento</p>
-                </div>
-              </label>
+               </div>                             
               <label class="item item-input">
                 <div class="input-label">
                   <p>Valor</p>

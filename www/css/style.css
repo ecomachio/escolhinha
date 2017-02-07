@@ -46,6 +46,10 @@
 	position: relative;	
 }
 
+.button-event{
+	background: #2962FF !important;
+}
+
 .financeiro-wrapper .financeiro-data h1,
 .financeiro-wrapper .financeiro-data h3{
 	color: white;
@@ -400,4 +404,12 @@ input[type="date"]:valid:before {
 	text-align: center;
 	color: #aaa;
 	margin: 0 auto;
+}
+
+.tipPadding{
+	padding:10px 0;
+}
+
+.removeBackground{
+	background-color: white !important;
 }
