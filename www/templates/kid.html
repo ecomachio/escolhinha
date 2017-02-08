@@ -74,20 +74,27 @@
               {{mensalidade.mes | converteMes }} {{mensalidade.ano}}
             </ion-checkbox>
           </div>
-          <div class="kidPaymentData card">
+
+          <div class="kidPaymentData card" 
+            ng-show="events.length > 0">
             <div class="item item-divider textWhite">
               <h3>Eventos</h3>
             </div>
-            <ion-checkbox on-hold="showComprovantePopup(mensalidade, aluno)" class="item-checkbox-right itemClass">
-              Torneio Copinha 12
-            </ion-checkbox>
-            <ion-checkbox on-hold="showComprovantePopup()" class="item-checkbox-right itemClass">
-              Torneio Mirim
-            </ion-checkbox>
-            <ion-checkbox on-hold="showComprovantePopup()" class="item-checkbox-right itemClass">
-              Matricula
-            </ion-checkbox>
+            <ion-checkbox ng-model="event.pago"
+                 on-hold="showComprovantePopup(event, aluno)" 
+                 class="item-checkbox-right itemClass"
+                 ng-repeat="event in events | orderBy:'$id':true"
+                 ng-change="pagaEvento(event)"
+                 ng-class="{ inadimItemClass: !event.pago }"
+                 on-hold="showComprovantePopup(event, aluno)">                
+              {{event.desc}} 
+              {{event.valor | currency}}
+            </ion-checkbox>            
           </div>
+          <p class="tip tipPadding" 
+             ng-show="events.length == 0"> 
+             Nenhum evento
+          </p>
         </div>
       </div>
 

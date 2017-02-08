@@ -19,7 +19,7 @@
       <p class="financePlaceHolder tip" ng-show="(alunos | filter : {inadimplente:true}).length == 0">Nenhum aluno em atraso</p>      
 
       <div class="list financeAlunos card" ng-show="(alunos | filter : {inadimplente:true}).length > 0">      
-        <a class="item financeItem item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos" ng-if="aluno.inadimplente"
+        <a class="item financeItem item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos|orderBy:'nome'" ng-if="aluno.inadimplente"
         ng-class="{ inadimItemClass: aluno.inadimplente }">
           <img src="img\kidplaceholder.jpg" />
           <h2 class="title">{{aluno.nome}}</h2>
@@ -46,7 +46,7 @@
       </div> 
      <p class="financePlaceHolder tip" ng-show="(alunos | filter : {inadimplente:false}).length == 0">Nenhum aluno em dia</p>      
      <div class="list card" ng-show="(alunos | filter : {inadimplente:false}).length > 0">        
-        <a class="item item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos" ng-if="!aluno.inadimplente"
+        <a class="item item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos|orderBy:'nome'" ng-if="!aluno.inadimplente"
         ng-class="{ inadimItemClass: aluno.inadimplente }">
           <img src="img\kidplaceholder.jpg" />
           <h2 class="title">{{aluno.nome}}</h2>

@@ -80,18 +80,24 @@ angular.module('starter.controllers', ['firebase'])
   } */
 
   $scope.openKid = function(aluno){
+      
+      $scope.aluno = aluno;
+      let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
+      let mensalidades = $firebaseArray(mensalidadesRef);
+      let eventsRef = firebase.database().ref().child('eventos').orderByChild('aluno').equalTo(aluno.$id);
+      let events = $firebaseArray(eventsRef);
 
-    $scope.aluno = aluno;
-    var mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
-    mensalidades = $firebaseArray(mensalidadesRef);
-    mensalidades.$loaded().then(function() {
-      $scope.mensalidades = mensalidades;
-      $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, aluno.contratoVencimento);
+      Promise.all([mensalidades.$loaded(), events.$loaded()]).then((resolved) => {
+        let mensalidades = resolved[0];
+        let events = resolved[1];        
+        $scope.mensalidades = mensalidades;
+        $scope.events = events;        
+        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+
+        console.log($scope.aluno);
+
+        $scope.modalKid.show();
     })
-
-    console.log($scope.aluno);
-
-    $scope.modalKid.show();
   }
 
   $scope.openAdd = function(){
@@ -250,22 +256,43 @@ angular.module('starter.controllers', ['firebase'])
   }
 
   $scope.pagaMensalidade = function(mensalidade){
+    const idAluno = mensalidade.aluno;
+    let eventsRef = firebase.database().ref().child('eventos').orderByChild('aluno').equalTo(idAluno);
+    let events = $firebaseArray(eventsRef);
+    let alunoRef = firebase.database().ref().child('aluno').child(idAluno);
+    let aluno = $firebaseObject(alunoRef);
 
-    mensalidades.$save(mensalidade).then(function(){
-      const idAluno = mensalidade.aluno;
-      let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(idAluno);
-      let mensalidades = $firebaseArray(mensalidadesRef);
+    Promise.all([aluno.$loaded(), events.$loaded()]).then((resolved) => {
+      let aluno = resolved[0];      
+      let events = resolved[1];
+      let mensalidades = $scope.mensalidades;
 
-      mensalidades.$loaded().then(function(){
-        let alunoRef = firebase.database().ref().child('aluno').child(idAluno);
-        let aluno = $firebaseObject(alunoRef);
+      mensalidades.$save(mensalidade).then(() => {
+        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        aluno.$save();
+      }).catch((err) => console.log(err));
 
-        aluno.$loaded().then(function(){
-          aluno.inadimplente = alunoService.isInadimplente(mensalidades, aluno.contratoVencimento);
-          aluno.$save();
-        })
-      })
-    });
+    })
+  }
+
+  $scope.pagaEvento = function(event){
+    const idAluno = event.aluno;
+    let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(idAluno);
+    let mensalidades = $firebaseArray(mensalidadesRef);
+    let alunoRef = firebase.database().ref().child('aluno').child(idAluno);
+    let aluno = $firebaseObject(alunoRef);
+
+    Promise.all([aluno.$loaded(), mensalidades.$loaded()]).then((resolved) => {
+      let aluno = resolved[0];      
+      let mensalidades = resolved[1];
+      let events = $scope.events;
+
+      events.$save(event).then(() => {
+        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        aluno.$save();
+      }).catch((err) => console.log(err));
+
+    })    
   }
 
   $scope.showComprovantePopup = function(mensalidade, aluno) {
@@ -524,16 +551,22 @@ angular.module('starter.controllers', ['firebase'])
     $scope.openKid = function(aluno){
 
       $scope.aluno = aluno;
-      var mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
-      mensalidades = $firebaseArray(mensalidadesRef);
-      mensalidades.$loaded().then(function() {
+      let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
+      let mensalidades = $firebaseArray(mensalidadesRef);
+      let eventsRef = firebase.database().ref().child('eventos').orderByChild('aluno').equalTo(aluno.$id);
+      let events = $firebaseArray(eventsRef);
+
+      Promise.all([mensalidades.$loaded(), events.$loaded()]).then((resolved) => {
+        let mensalidades = resolved[0];
+        let events = resolved[1];        
         $scope.mensalidades = mensalidades;
-        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, aluno.contratoVencimento);
+        $scope.events = events;        
+        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+
+        console.log($scope.aluno);
+
+        $scope.modalKid.show();
       })
-
-      console.log($scope.aluno);
-
-      $scope.modalKid.show();
     }
 
 
@@ -542,6 +575,13 @@ angular.module('starter.controllers', ['firebase'])
       $scope.inadimplentes = alunos.filter((aluno) => aluno.inadimplente).length;            
       $scope.overdueAmounts = alunos.reduce((amount, aluno) => 
         (aluno.inadimplente) ? amount + aluno.valorMensalidade : amount + 0, 0);
+
+      let eventsRef = firebase.database().ref().child('eventos');
+      let events = $firebaseArray(eventsRef);
+      events.$loaded().then(() => {
+        $scope.overdueAmounts = events.reduce((amount, event) => 
+          (!event.pago) ? amount + event.valor : amount + 0, 0);
+      })
     }
 
     /*
