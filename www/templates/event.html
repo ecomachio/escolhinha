@@ -30,7 +30,24 @@
           <p>Nesta seção é possivel adcionar eventos personalizados ao aluno, como por exemplo,
             torneios, rematricula entre outros.</p>
         </div>        
+        <div class="list financeAlunos card" ng-show="(alunos | filter : {inadimplente:true}).length > 0">      
+          <a class="item financeItem itemClass" href="#" 
+             ng-repeat="event in events|orderBy:'dataInicio':true"
+             ng-click="openUpdateEvent(event)"
+             ng-class="{ inadimItemClass: !event.pago }">          
+            <h2 class="title">{{event.desc}}</h2>
+            <div class="financeInfBlock">
+              <div class="financeInf">
+                <p class="infLabel">Valor</p>
+                <p class="inf"> {{event.valor | currency}}</p>
+              </div>
+              <div class="financeInf">
+                <p class="infLabel">Inicio</p>
+                <p class="inf"> {{event.dataInicio | date}}</p>
+              </div>            
+            </div>
+          </a>
+        </div>
       </div>
-
   </ion-content>
 </ion-modal-view>

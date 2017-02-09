@@ -2,7 +2,7 @@
 
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'jett.ionic.filter.bar', 'ion-gallery', 'jett.ionic.scroll.sista', 'ngIOS9UIWebViewPatch', 'ion-affix', 'firebase'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, alunoService, $firebaseArray) {
     $ionicPlatform.ready(function() {
 
     setTimeout(function () {
@@ -47,7 +47,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   //se a mensalidade do aluno nao esta paga e é menor que o dia do vencimento
   //o aluno esta inadimplente
   this.isInadimplente = (mensalidades, events, vencimento) => {    
-    let hasMensalidadesNaoPagas = mensalidades.filter((mensalidade) => 
+    let hasMensalidadesNaoPagas = mensalidades.filter((mensalidade) =>  
       (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())).length > 0
       
     let hasEventsNaoPagos = events.filter((event) => 

@@ -1,17 +1,18 @@
 <ion-view view-title="Financeiro" ng-init="loadAlunos()">
 
-  <ion-nav-buttons side="secondary">
-    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()"></button>
-  </ion-nav-buttons>
+  
   <ion-content class="main">
     <div class="financeiro-wrapper">
-      <div class="financeiro-data" >
+      <div class="financeiro-data">
+          <div class="financeiroLoading" ng-if="isLoading">
+            <ion-spinner icon="ripple" class="spinner-dark"></ion-spinner>
+          </div>
           <i class="iconCustom financeIcon  icon ion-android-refresh"
           ng-click="countInadimplentes(alunos)"></i>
           <h3>Valor em atraso</h3>
           <h1>{{overdueAmounts | currency}}</h1>
-          <h3>Alunos pendentes: {{inadimplentes}}</h3>          
-      </div>
+          <h3>Alunos pendentes: {{inadimplentes}}</h3>                              
+      </div>      
       <div class="financeiro-period"
            ng-show="(alunos | filter : {inadimplente:true}).length > 0"> 
         <h4>Em atraso</h4>
@@ -47,7 +48,7 @@
      <p class="financePlaceHolder tip" ng-show="(alunos | filter : {inadimplente:false}).length == 0">Nenhum aluno em dia</p>      
      <div class="list card" ng-show="(alunos | filter : {inadimplente:false}).length > 0">        
         <a class="item item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos|orderBy:'nome'" ng-if="!aluno.inadimplente"
-        ng-class="{ inadimItemClass: aluno.inadimplente }">
+         ng-class="{ inadimItemClass: aluno.inadimplente }">
           <img src="img\kidplaceholder.jpg" />
           <h2 class="title">{{aluno.nome}}</h2>
           <div class="financeInfBlock">

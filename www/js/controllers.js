@@ -113,6 +113,12 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalAddEvent = modalAddEvent;
   });
 
+  $ionicModal.fromTemplateUrl('templates/updateEvent.html', {
+    scope: $scope
+  }).then(function(modalEditEvent) {
+    $scope.modalEditEvent = modalEditEvent;
+  });
+
   $ionicModal.fromTemplateUrl('templates/renewContract.html', {
     scope: $scope
   }).then(function(modalRenewContract) {
@@ -131,6 +137,40 @@ angular.module('starter.controllers', ['firebase'])
     $scope.$emit("checkIfCanRenew", {});             
     $scope.modalRenewContract.show();
   }
+
+  $scope.openUpdateEvent = function(event){
+    $scope.editEvent = angular.copy(event);    
+    $scope.editEvent.dataInicio = new Date(event.dataInicio);
+    $scope.modalEditEvent.show();   
+  }
+
+})
+
+.controller('editEventController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray, periodoService) {
+
+  $scope.closeEditEvent = function(){
+    $scope.modalEditEvent.hide();
+  }  
+
+  $scope.updateEvent = function(editEvent){
+    const idAluno = $scope.aluno.$id;
+    let eventsRef = firebase.database().ref().child('eventos').orderByChild('aluno').equalTo(idAluno);
+    $firebaseArray(eventsRef).$loaded().then((events) => {      
+      let rec = events.$getRecord(editEvent.$id);
+      rec.desc = editEvent.desc;
+      rec.valor = editEvent.valor;
+      rec.dataInicio = new Date(editEvent.dataInicio.getTime()).getTime();      
+      events.$save(rec)
+      .then((event) => {
+        swal('Tudo pronto!', 'Evento atualizado', 'success');
+        $scope.modalEditEvent.hide();
+      }).catch((err) => {
+        swal('Opa!', 'Erro ao alterar evento', 'error');
+        $scope.modalEditEvent.hide();   
+      });
+    })
+
+  }
 })
 
 .controller('addEventController', function($scope, $state, $ionicLoading, $firebaseObject, $firebaseArray, periodoService) {
@@ -140,9 +180,24 @@ angular.module('starter.controllers', ['firebase'])
   }
 
   $scope.addEvent = function(event){
-    console.log(event);
-  }
+    const idAluno = $scope.aluno.$id;
+    let eventsRef = firebase.database().ref().child('eventos').orderByChild('aluno').equalTo(idAluno);
+    let events = $firebaseArray(eventsRef);
 
+    events.$add({
+      aluno: idAluno,
+      valor: event.valor,
+      dataInicio: event.dataInicio.getTime(),
+      desc: event.desc
+    }).then(() => {
+      swal(event.desc, 'Evento adicionado ao aluno', 'success');
+      $scope.modalAddEvent.hide();
+    }).catch((err) => {
+      console.log("Erro ao adcionar evento ", err);
+      swal(event.desc, 'Erro ao adcionar evento', 'error');
+      $scope.modalAddEvent.hide();   
+    })
+  }
 })
 
 .controller('renewContractController', function($scope, $rootScope, $state, $ionicLoading, $firebaseObject, $firebaseArray, alunoService) {
@@ -155,9 +210,12 @@ angular.module('starter.controllers', ['firebase'])
     console.log(renewMensalidade, renewEvent, $scope.aluno);
 
     const idAluno = $scope.aluno.$id;        
-    adicionarNovasMensalidades(idAluno, renewMensalidade.contratoVigencia, renewEvent.dataInicio.getTime());
-    adcionarEventoRematricula(idAluno, renewEvent).then(() => {
-      swal('Tudo pronto', 'Rematricula adicionada aos eventos');
+    adicionarNovasMensalidades(idAluno, renewMensalidade.contratoVigencia, renewEvent.dataInicio.getTime());    
+
+    Promise.all([alterarValorMensalidadeAluno(idAluno, renewMensalidade.valorMensalidade), 
+                 adcionarEventoRematricula(idAluno, renewEvent)])
+    .then(() => {
+      swal('Tudo pronto', 'Rematricula adicionada aos eventos', 'success');
       $scope.modalRenewContract.hide();   
     })
   }
@@ -174,6 +232,18 @@ angular.module('starter.controllers', ['firebase'])
  $rootScope.$on("checkIfCanRenew", function(){
     $scope.checkIfCanRenew();    
  })  
+
+ function alterarValorMensalidadeAluno(idAluno, newValue) {
+   
+   let alunoRef = firebase.database().ref().child('aluno').child(idAluno);
+   $firebaseObject(alunoRef).$loaded().then((aluno) => {
+      aluno.valorMensalidade = newValue;
+      return aluno.$save();
+   })
+
+
+
+ }
 
   function adcionarEventoRematricula(idAluno, renewEvent){
 
@@ -525,7 +595,7 @@ angular.module('starter.controllers', ['firebase'])
   })*/
 })
 
-.controller('FotosController', function($scope, $ionicModal, $ionicLoading, $firebaseObject, $firebaseArray, $ionicLoading, alunoService) {
+.controller('FotosController', function($scope, $rootScope, $q, $timeout, $ionicModal, $ionicLoading, $firebaseObject, $firebaseArray, $ionicLoading, alunoService) {
 
     $ionicModal.fromTemplateUrl('templates/kid.html', {
       scope: $scope
@@ -538,18 +608,15 @@ angular.module('starter.controllers', ['firebase'])
 
       alunoService.loadAlunos().$loaded().then(function(alunos){        
         //buildFinancePeriods($scope.alunos);
-        
-        //$scope.overdueAmounts = alunos.map(aluno.valorMensalidade);
-        $scope.alunos = alunoService.loadAlunos();
-        console.log($scope.alunos);        
-        console.log($scope.overdueAmounts);
+                
+        $scope.alunos = alunoService.loadAlunos();        
         $scope.countInadimplentes(alunos);
         $ionicLoading.hide();
       })
     }
 
     $scope.openKid = function(aluno){
-
+      
       $scope.aluno = aluno;
       let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
       let mensalidades = $firebaseArray(mensalidadesRef);
@@ -562,26 +629,50 @@ angular.module('starter.controllers', ['firebase'])
         $scope.mensalidades = mensalidades;
         $scope.events = events;        
         $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
-
-        console.log($scope.aluno);
+        
+        console.log($scope.aluno.nome);
 
         $scope.modalKid.show();
       })
     }
 
 
-    $scope.countInadimplentes = function(alunos){            
-      $scope.inadimplentes = "...";      
-      $scope.inadimplentes = alunos.filter((aluno) => aluno.inadimplente).length;            
-      $scope.overdueAmounts = alunos.reduce((amount, aluno) => 
-        (aluno.inadimplente) ? amount + aluno.valorMensalidade : amount + 0, 0);
-
+    $scope.countInadimplentes = function(alunos){                  
+      
+      let mensalidadesRef = firebase.database().ref().child('mensalidades');
+      let mensalidades = $firebaseArray(mensalidadesRef);
       let eventsRef = firebase.database().ref().child('eventos');
       let events = $firebaseArray(eventsRef);
-      events.$loaded().then(() => {
-        $scope.overdueAmounts = events.reduce((amount, event) => 
-          (!event.pago) ? amount + event.valor : amount + 0, 0);
-      })
+      console.log("dsaaaaaaaaaaaaa");
+      $scope.inadimplentes = "...";
+      $scope.inadimplentes = alunos.filter((aluno) => aluno.inadimplente).length;            
+      $scope.isLoading = true;
+      $q.all([mensalidades.$loaded(), events.$loaded()]).then((resolved) => {        
+        $scope.overdueAmounts = parseFloat(alunos.reduce((amount, aluno) =>{                    
+          
+          let todasMensalidades = resolved[0];
+          let todosEventos = resolved[1];
+
+          if(aluno.inadimplente){
+            
+            let valorMensalidadePendente = todasMensalidades
+            .filter((tm) => tm.aluno == aluno.$id)
+            .reduce((ma, tm) => 
+              ((!tm.pago) && (new Date(tm.ano, tm.mes, aluno.contratoVencimento, 0, 0, 0, 0) < new Date())) ? ma + aluno.valorMensalidade : ma, 0);
+
+            let valorEventosPendentes = todosEventos
+            .filter((te) => te.aluno == aluno.$id)
+            .reduce((amount, event) => 
+              ((!event.pago) && (new Date(event.dataInicio) < new Date())) ? amount + event.valor : amount, 0);
+
+            return amount + valorEventosPendentes + valorMensalidadePendente;
+
+          } else return amount;
+        }, 0));        
+        $scope.isLoading = false;    
+        console.log("dentro", $scope.isLoading, $scope.overdueAmounts);
+      })      
+      console.log("fora", $scope.isLoading);
     }
 
     /*
@@ -619,7 +710,7 @@ angular.module('starter.controllers', ['firebase'])
 
 .controller('FavoritosController', function($scope) {})
 
-.controller('LoginController', function($scope, $rootScope, $state, $ionicLoading, alunoService) {
+.controller('LoginController', function($scope, $firebaseArray, $rootScope, $state, $ionicLoading, alunoService) {
 
   $scope.user = {};
 
@@ -631,9 +722,8 @@ angular.module('starter.controllers', ['firebase'])
       console.log(user);
       if (user) {
         $rootScope.$emit("loadAlunos", {});
-
         $state.go('tab.cadastro');
-        $ionicLoading.hide();
+        $ionicLoading.hide();        
       }else{
         $state.go('login');
       }
