@@ -125,7 +125,7 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalEvent.hide();
   }
 
-  $scope.addEvent = function(){
+  $scope.addEvent = function(){      
     $scope.modalAddEvent.show();
   }
 
@@ -312,7 +312,7 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalEditKid.show();
   }
 
-  $scope.openEvent = function(aluno){    
+  $scope.openEvent = function(aluno){       
     $scope.modalEvent.show();
   }
 

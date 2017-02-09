@@ -30,9 +30,9 @@
           <p>Nesta seção é possivel adcionar eventos personalizados ao aluno, como por exemplo,
             torneios, rematricula entre outros.</p>
         </div>        
-        <div class="list financeAlunos card" ng-show="(alunos | filter : {inadimplente:true}).length > 0">      
+        <div class="list financeAlunos card" ng-show="events.length > 0">      
           <a class="item financeItem itemClass" href="#" 
-             ng-repeat="event in events|orderBy:'dataInicio':true"
+             ng-repeat="event in events | orderBy:'dataInicio':true"
              ng-click="openUpdateEvent(event)"
              ng-class="{ inadimItemClass: !event.pago }">          
             <h2 class="title">{{event.desc}}</h2>
