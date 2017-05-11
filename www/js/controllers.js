@@ -23,9 +23,33 @@ angular.module('starter.controllers', ['firebase'])
 
     alunoService.loadAlunos().$loaded().then(function(alunos){
       $scope.alunos = alunos;
-      periodoService.loadPeriod();
+      let mensalidadesRef = firebase.database().ref().child('mensalidades');
+      let mensalidades = $firebaseArray(mensalidadesRef);
+      /*
+      mensalidades.$loaded().then(function(m){
+        m = m.filter((mensalidade) => {
+          if(mensalidade.periodo != undefined){
+            getM(mensalidade).then(function(mm){
+            console.log(mm);
+            mm.$remove().then(function(){
+              console.log("m removido");            
+            }).catch(function(err){
+              console.log("Erro ao remover MSG", err);
+           })
+          })
+          }
+        });                        
+      })  
+      */
+  
       $ionicLoading.hide();
     })
+  }
+
+  function getM(_m){
+    let ref = firebase.database().ref().child('mensalidades').child(_m.$id);
+    let res = $firebaseObject(ref);
+    return res.$loaded();
   }
   /*
   function loadPeriod() {

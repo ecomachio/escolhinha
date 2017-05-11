@@ -53,6 +53,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     let hasEventsNaoPagos = events.filter((event) => 
       (!event.pago) && (new Date(event.dataInicio) < new Date())).length > 0    
 
+    console.log("hasMensalidadesNaoPagas", hasMensalidadesNaoPagas);
+    console.log("hasMensalidadesNaoPagas", hasMensalidadesNaoPagas);
+
     if(hasEventsNaoPagos || hasMensalidadesNaoPagas)
       return true;
     else return false;
@@ -93,58 +96,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     var per = mes.toString() + "/" + ano.toString();
 
     return per;
-  }
-
-  this.checkNewPeriod = function checkNewPeriod(periodos) {
-    var flagJaExistePer = false;
-    var per = self.currentPeriodo();
-    //console.log(periodos);
-
-    // periodo ainda nao existe
-    for (var i = 0; i < periodos.length; i++) {
-      console.log("periodos[i].periodo ");
-      console.log(periodos[i].periodo);
-      console.log(per);
-      if(periodos[i].periodo == per)
-        flagJaExistePer = true;
-    }
-    var mes = per.substring(0,per.indexOf("/"));
-    var ano = per.substring(per.indexOf("/")+1, per.length)
-    if(!flagJaExistePer){
-      periodos.$add({
-        periodo: per,
-        mes: self.converteMes(parseInt(mes)),
-        ano: ano
-      }).then(function(ref){
-        console.log("periodo incluido");
-
-        var alunosRef = firebase.database().ref().child('aluno');
-        var alunos = $firebaseArray(alunosRef);
-        alunos.$loaded().then(function(){
-          for (var i = 0; i < alunos.length; i++) {
-            var mensalidadesRef = firebase.database().ref().child('mensalidades');
-            var mensalidades = $firebaseArray(mensalidadesRef);
-            mensalidades.$add({
-              aluno: alunos[i].$id,
-              periodo: per,
-              ano: ano,
-              mes: mes,
-              pago: false
-            })
-          }
-          for (var i = 0; i < alunos.length; i++) {
-            let alunoRef = firebase.database().ref().child('aluno').child(alunos[i].$id);
-            let aluno = $firebaseObject(alunoRef);
-
-            aluno.$loaded().then(function(){
-              aluno.inadimplente = self.isInadimplente(mensalidades);
-              aluno.$save();
-            })
-          }
-        })
-      })
-    }
-  }
+  } 
 
   this.isInadimplente = function(mensalidades, done){
 
