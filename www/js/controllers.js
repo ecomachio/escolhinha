@@ -382,7 +382,7 @@ angular.module('starter.controllers', ['firebase'])
               + $rootScope.aluno.responsavel +
               " a quantia de "
               + $filter('currency')($rootScope.aluno.valorMensalidade) +
-              " refenre a mensalidade "
+              " referente a mensalidade "
               + ($rootScope.mensalidade.mes + 1) + "/" + $rootScope.mensalidade.ano +
               " Código de segurança: " + $rootScope.mensalidade.$id;
 
@@ -589,8 +589,11 @@ angular.module('starter.controllers', ['firebase'])
       alunoService.loadAlunos().$loaded().then(function(alunos){        
         //buildFinancePeriods($scope.alunos);
                 
-        $scope.alunos = alunos;        
+        alunos.filter((aluno) => {
+          console.log(aluno.nome, aluno.inadimplente, aluno.$id);
+        })
         $scope.countInadimplentes(alunos);
+        $scope.alunos = alunos;  
         $ionicLoading.hide();
       })
     }
