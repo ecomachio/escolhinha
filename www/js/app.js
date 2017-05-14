@@ -32,7 +32,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   }
 
-  this.isInadimplenteByAluno = (aluno) => {
+  this.isInadimplenteByAluno = (aluno) => {    
     let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
     let mensalidades = $firebaseArray(mensalidadesRef);
     let eventsRef = firebase.database().ref().child('events').orderByChild('aluno').equalTo(aluno.$id);
@@ -51,10 +51,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())).length > 0
       
     let hasEventsNaoPagos = events.filter((event) => 
-      (!event.pago) && (new Date(event.dataInicio) < new Date())).length > 0    
-
-    console.log("hasMensalidadesNaoPagas", hasMensalidadesNaoPagas);
-    console.log("hasMensalidadesNaoPagas", hasMensalidadesNaoPagas);
+      (!event.pago) && (new Date(event.dataInicio) < new Date())).length > 0       
 
     if(hasEventsNaoPagos || hasMensalidadesNaoPagas)
       return true;

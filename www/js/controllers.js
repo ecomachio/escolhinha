@@ -18,6 +18,12 @@ angular.module('starter.controllers', ['firebase'])
      $scope.loadAlunos();
   });
 
+  function getAluno(_aluno){
+    let ref = firebase.database().ref().child('aluno').child(_aluno.$id);
+    let res = $firebaseObject(ref);
+    return res.$loaded();
+  }
+
   $scope.loadAlunos = function loadAlunos() {
     $ionicLoading.show();    
 
@@ -42,6 +48,19 @@ angular.module('starter.controllers', ['firebase'])
       })  
       */
   
+      //atualiza status de mesanlidades
+      alunos.filter((aluno) => {
+        console.log(aluno.nome, aluno.inadimplente, aluno.$id);
+        getAluno(aluno).then((a) => {
+          alunoService.isInadimplenteByAluno(a).then((isInadimplenteResolved) => {
+            a.inadimplente = isInadimplenteResolved;
+            a.$save();  
+            $scope.alunos = alunos;
+            $ionicLoading.hide();
+          });
+        })
+      })        
+
       $ionicLoading.hide();
     })
   }
@@ -611,15 +630,19 @@ angular.module('starter.controllers', ['firebase'])
       $ionicLoading.show();
 
       alunoService.loadAlunos().$loaded().then(function(alunos){        
-        //buildFinancePeriods($scope.alunos);
-                
-        alunos.filter((aluno) => {
-          console.log(aluno.nome, aluno.inadimplente, aluno.$id);
-        })
+        //buildFinancePeriods($scope.alunos);              
+          
         $scope.countInadimplentes(alunos);
-        $scope.alunos = alunos;  
+        $scope.alunos = alunos;
         $ionicLoading.hide();
+        
       })
+    }
+
+    function getAluno(_aluno){
+      let ref = firebase.database().ref().child('aluno').child(_aluno.$id);
+      let res = $firebaseObject(ref);
+      return res.$loaded();
     }
 
     $scope.openKid = function(aluno){
