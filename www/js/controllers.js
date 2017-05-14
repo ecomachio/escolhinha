@@ -60,8 +60,6 @@ angular.module('starter.controllers', ['firebase'])
           });
         })
       })        
-
-      $ionicLoading.hide();
     })
   }
 
