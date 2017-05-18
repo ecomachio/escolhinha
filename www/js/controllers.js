@@ -49,7 +49,7 @@ angular.module('starter.controllers', ['firebase'])
       */
   
       //atualiza status de mesanlidades
-      alunos.filter((aluno) => {
+     alunos.filter((aluno) => {
         console.log(aluno.nome, aluno.inadimplente, aluno.$id);
         getAluno(aluno).then((a) => {
           alunoService.isInadimplenteByAluno(a).then((isInadimplenteResolved) => {
@@ -528,12 +528,12 @@ angular.module('starter.controllers', ['firebase'])
         nome: addAluno.nome,
         idade: addAluno.idade,
         responsavel: addAluno.responsavel,
-        email: addAluno.email,
+        email: addAluno.email |! "",
         inadimplente: true,
         dataNascimento: addAluno.dataNascimento.getTime(),
         contratoVigencia: addAluno.contratoVigencia,
         contratoVencimento: addAluno.contratoVencimento,
-        telefone: addAluno.telefone,
+        telefone: addAluno.telefone || 0,
         valorMensalidade: addAluno.valorMensalidade
       }).then(function(ref){        
 
