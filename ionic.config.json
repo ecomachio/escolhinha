@@ -1,6 +1,9 @@
 {
   "name": "znapp",
-  "app_id": "fe12404b",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic1",
   "gulpStartupTasks": [
     "sass",
     "watch"
@@ -8,5 +11,6 @@
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
-  ]
+  ],
+  "id": "fe12404b"
 }
