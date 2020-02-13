@@ -30,74 +30,25 @@ angular.module('starter.controllers', ['firebase'])
     alunoService.loadAlunos().$loaded().then(function(alunos){
       $scope.alunos = alunos;
       let mensalidadesRef = firebase.database().ref().child('mensalidades');
-      let mensalidades = $firebaseArray(mensalidadesRef);
-      /*
-      mensalidades.$loaded().then(function(m){
-        m = m.filter((mensalidade) => {
-          if(mensalidade.periodo != undefined){
-            getM(mensalidade).then(function(mm){
-            console.log(mm);
-            mm.$remove().then(function(){
-              console.log("m removido");
-            }).catch(function(err){
-              console.log("Erro ao remover MSG", err);
-           })
-          })
-          }
-        });
-      })
-      */
-
-      //atualiza status de mesanlidades
-      
+      let mensalidades = $firebaseArray(mensalidadesRef);      
 
       var alunoPromises = alunos.map(a => getAluno(a));
       Promise.all(alunoPromises).then(todosAlunos => {        
         let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('ano').equalTo(2020);
-        $firebaseArray(mensalidadesRef).$loaded().then(todasMensalidades => {          
+        $firebaseArray(mensalidadesRef).$loaded().then(todasMensalidades => {        
           
-          
-          console.log(todosAlunos);
-          console.log(todosAlunos[128].$id);
-          console.log(todasMensalidades);                    
-
-          $ionicLoading.hide();
-          console.time();
-          var isInadimplentePromises = todosAlunos.map(a => {            
-            return alunoService.isInadimplenteByAluno(a, todasMensalidades.filter(m => m.aluno == a.$id))            
-          });
-          console.timeEnd();                
-          
-          
-          /*          
-          console.time();
-        
-          Promise.all(isInadimplentePromises).then(res => {          
-            console.log("2", res);
-            console.timeEnd()           
-          });
-          */
+          Promise.all(todosAlunos.map(aluno => getAluno(aluno))).then((res) => {
+            res.forEach(a => {
+              a.inadimplente = alunoService.isInadimplenteByAluno(a, todasMensalidades.filter(m => m.aluno == a.$id))  ;
+              a.$save();
+              $scope.alunos = alunos;                              
+            });            
+            $ionicLoading.hide();    
+          })            
         });
-
+        console.timeEnd();          
       });
-      
-
-     /*alunos.filter((aluno) => {
-        console.log(aluno.nome, aluno.inadimplente, aluno.$id);
-        
-        getAluno(aluno).then((a) => {
-          
-          alunoService.isInadimplenteByAluno(a).then((isInadimplenteResolved) => {
-            a.inadimplente = isInadimplenteResolved;
-            a.$save();
-            $scope.alunos = alunos;
-            
-           
-          });
-        })
-      })*/
-      
-    })
+    });  
   }
 
   function getM(_m){
@@ -169,7 +120,7 @@ angular.module('starter.controllers', ['firebase'])
         let events = resolved[1];
         $scope.mensalidades = mensalidades;
         $scope.events = events;
-        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno);
         $scope.modalKid.show();
     })
   }
@@ -407,7 +358,7 @@ angular.module('starter.controllers', ['firebase'])
       let mensalidades = $scope.mensalidades;
 
       mensalidades.$save(mensalidade).then(() => {
-        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno);
         aluno.$save();
       }).catch((err) => console.log(err));
 
@@ -427,7 +378,7 @@ angular.module('starter.controllers', ['firebase'])
       let events = $scope.events;
 
       events.$save(event).then(() => {
-        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno);
         aluno.$save();
       }).catch((err) => console.log(err));
 
@@ -546,27 +497,30 @@ angular.module('starter.controllers', ['firebase'])
   $scope.save = function(editAluno){
 
     getAluno(editAluno).then(function(aluno){
-      alunoService.isInadimplenteByAluno(editAluno).then((isInadimplenteResolved) => {
-        aluno.inadimplente = isInadimplenteResolved;
-        aluno.nome = editAluno.nome;
-        aluno.idade = editAluno.idade;
-        aluno.responsavel = editAluno.responsavel;
-        aluno.email = editAluno.email;
-        aluno.dataNascimento = editAluno.dataNascimento;
-        aluno.contratoVigencia = editAluno.contratoVigencia;
-        aluno.contratoVencimento = parseInt(editAluno.contratoVencimento);
-        aluno.telefone = editAluno.telefone;
-        aluno.valorMensalidade = editAluno.valorMensalidade;
 
-        aluno.$save()
-        .then(function(){
-          $scope.aluno = aluno;
-          $scope.modalEditKid.hide();
-        })
-        .catch(function(err){
-          console.log("Erro ao alterar MSG", err);
-        })
-      })
+      let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
+      let mensalidades = $firebaseArray(mensalidadesRef);
+      mensalidades.$loaded().then(mensalidades => {        
+          aluno.inadimplente = alunoService.isInadimplenteByAluno(editAluno, mensalidades);
+          aluno.nome = editAluno.nome;
+          aluno.idade = editAluno.idade;
+          aluno.responsavel = editAluno.responsavel;
+          aluno.email = editAluno.email;
+          aluno.dataNascimento = editAluno.dataNascimento;
+          aluno.contratoVigencia = editAluno.contratoVigencia;
+          aluno.contratoVencimento = parseInt(editAluno.contratoVencimento);
+          aluno.telefone = editAluno.telefone;
+          aluno.valorMensalidade = editAluno.valorMensalidade;
+  
+          aluno.$save()
+          .then(function(){
+            $scope.aluno = aluno;
+            $scope.modalEditKid.hide();
+          })
+          .catch(function(err){
+            console.log("Erro ao alterar MSG", err);
+          })        
+      })      
     })
   }
 
@@ -730,7 +684,7 @@ angular.module('starter.controllers', ['firebase'])
         let events = resolved[1];
         $scope.mensalidades = mensalidades;
         $scope.events = events;
-        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        $scope.aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno);
         $scope.modalKid.show();
       })
     }

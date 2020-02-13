@@ -32,8 +32,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   }
 
-  this.isInadimplenteByAluno = (aluno, mensalidades) => {    
-    console.time("hue");
+  this.isInadimplenteByAluno = (aluno, mensalidades) => {        
     let eventsRef = firebase.database().ref().child('events').orderByChild('aluno').equalTo(aluno.$id);
     let events = $firebaseArray(eventsRef);
     return self.isInadimplente(mensalidades, events, aluno);
