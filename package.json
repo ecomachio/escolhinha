@@ -26,5 +26,10 @@
   "cordovaPlatforms": [
     "ios",
     "android"
-  ]
+  ],
+  "//": [ 
+    "node version sholud be v10.15.1", 
+    "python verions should be Python 2.7.2",
+    "it also need c# compiler like visual studio"]
 }
+
