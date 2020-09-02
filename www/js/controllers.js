@@ -511,6 +511,7 @@ angular.module('starter.controllers', ['firebase'])
           aluno.contratoVencimento = parseInt(editAluno.contratoVencimento);
           aluno.telefone = editAluno.telefone;
           aluno.valorMensalidade = editAluno.valorMensalidade;
+          aluno.matriculaPausada = editAluno.matriculaPausada;
   
           aluno.$save()
           .then(function(){
@@ -537,7 +538,7 @@ angular.module('starter.controllers', ['firebase'])
         console.log("Erro ao remover MSG", err);
       })
     })
-  }
+  }  
 
 })
 
@@ -705,7 +706,10 @@ angular.module('starter.controllers', ['firebase'])
 
           let todasMensalidades = resolved[0];
           let todosEventos = resolved[1];
-
+          
+          if(aluno.matriculaPausada) 
+            return amount
+          
           if(aluno.inadimplente){
 
             let valorMensalidadePendente = todasMensalidades
