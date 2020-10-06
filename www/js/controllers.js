@@ -337,9 +337,11 @@ angular.module('starter.controllers', ['firebase'])
 
   $scope.openEditKid = function(aluno){
     $scope.editAluno = angular.copy(aluno);
-    $scope.editAluno.dataNascimentoAux = new Date(aluno.dataNascimento);
+    $scope.editAluno.dataNascimentoAux = new Date(aluno.dataNascimento);    
     $scope.modalEditKid.show();
   }
+
+  $scope.getAlunoClass = alunoService.getAlunoClass;
 
   $scope.openEvent = function(aluno){
     $scope.modalEvent.show();
@@ -762,6 +764,8 @@ angular.module('starter.controllers', ['firebase'])
         }, [])
       })
     }
+
+    $scope.getAlunoClass = alunoService.getAlunoClass;
 })
 
 .controller('FavoritosController', function($scope) {})

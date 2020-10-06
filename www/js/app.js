@@ -64,6 +64,29 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     return mensalidades.$loaded().then(() => mensalidades.filter((mensalidade) => (!mensalidade.pago)).length == 0);
   }
 
+  this.getAlunoClass = (aluno, type) => {        
+    let cssClass = "";
+    let res = "";
+
+    if(aluno.matriculaPausada){
+      cssClass = 'pausedClass';
+    } else if(aluno.inadimplente){
+      cssClass = 'inadimClass';
+    } else {
+      cssClass = "";
+    }
+
+    if (cssClass != "") {
+      if(type){
+        res = cssClass.slice(0, cssClass.indexOf("Class")) + type + "Class"
+      } else {
+        res = cssClass;
+      }
+    }
+
+    return res;
+  }
+
 })
 
 .service('periodoService', function($ionicLoading, $firebaseArray, $firebaseObject){

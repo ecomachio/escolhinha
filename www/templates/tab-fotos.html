@@ -18,6 +18,34 @@
         <i class="iconCustom financeIconSearch iconDark icon ion-android-search"></i>
       </div>
       <div class="financeiro-period"
+           ng-show="(alunos | filter : {matriculaPausada:true}).length > 0"> 
+        <h4>Matriculas pausadas</h4>
+      </div> 
+      <p class="financePlaceHolder tip" ng-show="(alunos | filter : {matriculaPausada:true}).length == 0">Nenhuma matricula pausada</p>      
+
+      <div class="list financeAlunos card" ng-show="(alunos | filter : {matriculaPausada:true}).length > 0">      
+        <a class="item financeItem item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos|orderBy:'nome'| filter:search" ng-if="aluno.matriculaPausada"
+        ng-class="getAlunoClass(aluno, 'Item')">
+          <img src="img\kidplaceholder.jpg" />
+          <h2 class="title">{{aluno.nome}}</h2>
+          <div class="financeInfBlock">
+            <div class="financeInf">
+              <p class="infLabel">Resposável</p>
+              <p class="inf"> {{aluno.responsavel}}</p>
+            </div>
+            <div class="financeInf">
+              <p class="infLabel">Valor</p>
+              <p class="inf"> {{aluno.valorMensalidade | currency}}</p>
+            </div>
+            <div class="financeInf">
+              <p class="infLabel">Vencimento</p>
+              <p class="inf">Dia {{aluno.contratoVencimento}}</p>              
+            </div>
+          </div>
+        </a>
+       </div>
+     </div>
+      <div class="financeiro-period"
            ng-show="(alunos | filter : {inadimplente:true}).length > 0"> 
         <h4>Em atraso</h4>
       </div> 
@@ -25,7 +53,7 @@
 
       <div class="list financeAlunos card" ng-show="(alunos | filter : {inadimplente:true}).length > 0">      
         <a class="item financeItem item-avatar itemClass" href="#" ng-click="openKid(aluno)" ng-repeat="aluno in alunos|orderBy:'nome'| filter:search" ng-if="aluno.inadimplente"
-        ng-class="{ inadimItemClass: aluno.inadimplente }">
+        ng-class="getAlunoClass(aluno, 'Item')">
           <img src="img\kidplaceholder.jpg" />
           <h2 class="title">{{aluno.nome}}</h2>
           <div class="financeInfBlock">

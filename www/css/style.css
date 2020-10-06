@@ -231,6 +231,19 @@
 	border-right: 5px solid #ef473a !important;
 }
 
+.pausedHeaderClass{
+	/*background: #e6b500 !important;*/
+  background-color: #c79a00 !important;
+}
+.pausedClass{
+	background: #ffca28 !important;
+	/*background: #ffc900 !important;*/
+}
+
+.pausedItemClass{
+	border-right: 5px solid #ffca28 !important;
+}
+
 .mainKidRegistrationData{
 	display: flex;
 	flex-direction: column;
