@@ -45,7 +45,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   //se a mensalidade do aluno nao esta paga e é menor que o dia do vencimento
   //o aluno esta inadimplente
   this.isInadimplente = (mensalidades, events, aluno) => {    
-    console.log("mensalidades", mensalidades);
+
     let hasMensalidadesNaoPagas = mensalidades.filter((mensalidade) =>  
       (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, aluno.contratoVencimento, 0, 0, 0, 0) < new Date())).length > 0
       
@@ -67,6 +67,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   this.getAlunoClass = (aluno, type) => {        
     let cssClass = "";
     let res = "";
+    
+    if(!aluno) 
+      return;
 
     if(aluno.matriculaPausada){
       cssClass = 'pausedClass';
