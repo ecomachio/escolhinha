@@ -415,7 +415,7 @@ angular.module('starter.controllers', ['firebase'])
 
   $scope.share = function(t, yy, img, link){
 
-    if(!$rootScope.aluno.inadimplente){
+    if($rootScope.mensalidade.pago){
 
       let msg = "Diprima recebeu de "
                 + $rootScope.aluno.responsavel +
