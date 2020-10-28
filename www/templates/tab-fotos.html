@@ -9,7 +9,11 @@
           ng-click="countInadimplentes(alunos)"></i>
           <h3>Valor em atraso</h3>
           <h1>{{overdueAmounts | currency}}</h1>
-          <h3>Alunos pendentes: {{inadimplentes}}</h3>                              
+          <div class="ind">
+            <h3>Alunos inadimplentes: {{inadimplentes}}</h3>
+            <h4>Alunos pausados: {{pausados}}</h4>       
+            <h4>Alunos em dia: {{adimplentes}}</h4>           
+          </div>                   
       </div>      
       <div class=financeiro-search>
         <input type="search"

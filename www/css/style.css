@@ -85,8 +85,13 @@
 	background: #2962FF !important;
 }
 
+.financeiro-wrapper .financeiro-data .ind{
+	padding: 10px;
+}
+
 .financeiro-wrapper .financeiro-data h1,
-.financeiro-wrapper .financeiro-data h3{
+.financeiro-wrapper .financeiro-data h3,
+.financeiro-wrapper .financeiro-data h4{
 	color: white;
 	transition: all 200ms ease-in-out;
 }

@@ -700,8 +700,18 @@ angular.module('starter.controllers', ['firebase'])
       let eventsRef = firebase.database().ref().child('eventos');
       let events = $firebaseArray(eventsRef);
 
+      //count alunos inadimplentes
       $scope.inadimplentes = "...";
       $scope.inadimplentes = alunos.filter((aluno) => aluno.inadimplente).length;
+
+      //count matriculas pausadas
+      $scope.pausados = "...";
+      $scope.pausados = alunos.filter((aluno) => aluno.matriculaPausada).length;
+
+      //count alunos adimplentes
+      $scope.adimplentes = "...";
+      $scope.adimplentes = alunos.filter((aluno) => !aluno.inadimplente).length;
+
       $scope.isLoading = true;
       $q.all([mensalidades.$loaded(), events.$loaded()]).then((resolved) => {
         $scope.overdueAmounts = parseFloat(alunos.reduce((amount, aluno) =>{

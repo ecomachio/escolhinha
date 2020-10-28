@@ -3,8 +3,11 @@
   "version": "1.1.1",
   "description": "znapp: An Ionic project",
   "dependencies": {
+    "@ionic-native/social-sharing": "^5.28.0",
     "angularfire": "^2.2.0",
     "cordova-android": "^8.1.0",
+    "cordova-plugin-x-socialsharing": "^6.0.2",
+    "es6-promise-plugin": "^4.2.2",
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
     "gulp-minify-css": "^0.3.0",
@@ -40,7 +43,8 @@
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-x-socialsharing": {}
     },
     "platforms": [
       "android"
