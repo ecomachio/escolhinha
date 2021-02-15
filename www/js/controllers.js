@@ -34,12 +34,13 @@ angular.module('starter.controllers', ['firebase'])
 
       var alunoPromises = alunos.map(a => getAluno(a));
       Promise.all(alunoPromises).then(todosAlunos => {        
-        let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('ano').equalTo(2020);
+        let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('ano');
         $firebaseArray(mensalidadesRef).$loaded().then(todasMensalidades => {        
           
           Promise.all(todosAlunos.map(aluno => getAluno(aluno))).then((res) => {
             res.forEach(a => {
               a.inadimplente = alunoService.isInadimplenteByAluno(a, todasMensalidades.filter(m => m.aluno == a.$id))  ;
+              //console.log(a.nome, a.inadimplente, todasMensalidades.filter(m => m.aluno == a.$id))
               a.$save();
               $scope.alunos = alunos;                              
             });            
@@ -629,7 +630,7 @@ angular.module('starter.controllers', ['firebase'])
 })
 
 .controller('SettingsController', function($scope, $state) {
-
+    
   $scope.signOut = function(){
     firebase.auth().signOut().then(function() {
       $state.go('login');
@@ -674,6 +675,7 @@ angular.module('starter.controllers', ['firebase'])
       return res.$loaded();
     }
 
+    
     $scope.openKid = function(aluno){
 
       $scope.aluno = aluno;
