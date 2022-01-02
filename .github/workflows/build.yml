@@ -33,7 +33,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - run: npm ci
-      - run: ionic cordova build android
+      - run: ionic cordova build android --confirm --no-interactive
       - name: Create the new Release
         uses: ncipollo/release-action@v1
         with:
