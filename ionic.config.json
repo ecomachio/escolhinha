@@ -1,6 +1,8 @@
 {
   "name": "znapp",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic1",
   "gulpStartupTasks": [
     "sass",
