@@ -34,7 +34,7 @@
     "gulp-uglify": "^1.1.0",
     "gulp-util": "^2.2.14",
     "jshint-stylish": "^1.0.0",
-    "open": "0.0.5",
+    "open": "7.0.2",
     "ripple-emulator": "^0.9.28",
     "run-sequence": "^1.0.2",
     "shelljs": "^0.3.0",
