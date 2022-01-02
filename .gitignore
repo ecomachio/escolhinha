@@ -8,3 +8,4 @@ plugins/
 nbproject
 nbproject/
 .vscode/settings.json
+.DS_Store
