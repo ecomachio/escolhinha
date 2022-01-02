@@ -37,4 +37,5 @@ jobs:
           artifacts: "/home/runner/work/scout/scout/platforms/android/app/build/outputs/apk/debug/app-debug.apk"
           body: "Escolinha release"
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.NOW }}
           draft: false
