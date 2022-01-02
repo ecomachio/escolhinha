@@ -38,4 +38,5 @@ jobs:
           body: "Escolinha release"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.NOW }}
+          commit: master
           draft: false
