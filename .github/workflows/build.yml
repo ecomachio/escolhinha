@@ -12,8 +12,8 @@ jobs:
   build:
     name: build and release the app
     runs-on: ubuntu-latest
-      container:
-        image: python:2.7.18-buster
+    container:
+      image: python:2.7.18-buster
 
     steps:
       - name: set env
