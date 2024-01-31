@@ -26,6 +26,7 @@ jobs:
         uses: coturiv/setup-ionic@v1.0.4
         with:
           cordova-version: 8
+          ionic-version: 1
       - name: setup node
         uses: actions/setup-node@v1
         with:
@@ -33,7 +34,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - run: npm install -g @ionic/cli@5.4.16
+      - run: npm install -g @ionic/cli@6.0.0
       - run: npm ci
 
       - run: ionic cordova build android --confirm --no-interactive --verbose
