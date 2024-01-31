@@ -12,7 +12,6 @@ jobs:
   build:
     name: build and release the app
     runs-on: ubuntu-latest
-    container: coatldev/six:3.11
 
     steps:
       - name: set env
@@ -33,7 +32,7 @@ jobs:
           node-version: 16
       - name: Checkout code
         uses: actions/checkout@v2
-      - run: npm ci
+
       - run: ionic cordova build android --confirm --no-interactive --verbose
       - name: Create the new Release
         uses: ncipollo/release-action@v1
