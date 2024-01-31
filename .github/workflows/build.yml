@@ -22,12 +22,7 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Install Python 2.7
-        run: |
-          sudo add-apt-repository ppa:deadsnakes/ppa -y
-          sudo apt-get update
-          sudo apt-get install python2.7 -y
-          echo "PATH=/usr/bin:$PATH" >> $GITHUB_ENV
+
 
       - name: setup ionic and cordova
         uses: coturiv/setup-ionic@v1.0.4
@@ -42,6 +37,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install Python 2.7
+        run: |
+          sudo add-apt-repository ppa:deadsnakes/ppa -y
+          sudo apt-get update
+          sudo apt-get install python2.7 -y
+          echo "PATH=/usr/bin:$PATH" >> $GITHUB_PATH
+      - run: npm config set python python2.7
       - run: npm ci
 
       - run: ionic cordova build android --confirm --no-interactive --verbose
