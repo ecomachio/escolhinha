@@ -33,8 +33,9 @@ jobs:
         uses: coturiv/setup-ionic@v1.0.4
         with:
           cordova-version: 8
+
       - name: setup node
-      - uses: actions/setup-node@v4
+        uses: actions/setup-node@v4
         with:
           node-version: 12
       - name: Checkout code
