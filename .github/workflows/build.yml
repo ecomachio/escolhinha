@@ -11,9 +11,7 @@ on:
 jobs:
   build:
     name: build and release the app
-    runs-on: ubuntu-20.04
-    container:
-      image: python:2.7.18-buster
+    runs-on: ubuntu-latest
 
     steps:
       - name: set env
@@ -24,6 +22,12 @@ jobs:
         with:
           java-version: 1.8
 
+      - name: Set up Python2
+        uses: actions/checkout@v4
+        uses: actions/setup-python@v5
+        with:
+          python-version: '2.7.18'
+
       - name: setup ionic and cordova
         uses: coturiv/setup-ionic@v1.0.4
         with:
@@ -31,7 +35,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 16
       - name: Checkout code
         uses: actions/checkout@v2
       - run: npm ci
