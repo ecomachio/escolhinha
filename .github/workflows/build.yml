@@ -34,7 +34,7 @@ jobs:
         with:
           cordova-version: 8
       - name: setup node
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
           node-version: 12
       - name: Checkout code
