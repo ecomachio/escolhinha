@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo add-apt-repository ppa:deadsnakes/ppa -y
           sudo apt-get update
-          sudo apt-get install python2.7.18 -y
+          sudo apt-get install python2.7 -y
           echo "PATH=/usr/bin:$PATH" >> $GITHUB_ENV
 
       - name: setup ionic and cordova
