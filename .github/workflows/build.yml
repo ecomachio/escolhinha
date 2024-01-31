@@ -33,7 +33,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - run: npm install -g @ionic/cli
+      - run: npm install -g @ionic/cli@5.4.16
       - run: npm ci
 
       - run: ionic cordova build android --confirm --no-interactive --verbose
