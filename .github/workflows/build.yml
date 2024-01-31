@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: build and release the app
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: set env
