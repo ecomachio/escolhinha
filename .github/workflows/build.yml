@@ -43,7 +43,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install python2.7 -y
           echo "PATH=/usr/bin:$PATH" >> $GITHUB_PATH
-      - run: npm config set python python2.7
+
       - run: npm ci
 
       - run: ionic cordova build android --confirm --no-interactive --verbose
