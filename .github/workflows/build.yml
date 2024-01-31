@@ -34,10 +34,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Install Android build tools
+        run: |
+          echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "build-tools;30.0.3"
 
-      - run: npm install -g @ionic/cli@6.0.0
       - run: npm ci
 
       - run: ionic cordova build android --confirm --no-interactive --verbose
