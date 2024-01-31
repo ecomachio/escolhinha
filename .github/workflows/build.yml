@@ -23,11 +23,6 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Set up Python2
-        uses: actions/setup-python@v5
-        with:
-          python-version: '2.7.18'
-
       - name: setup ionic and cordova
         uses: coturiv/setup-ionic@v1.0.4
         with:
