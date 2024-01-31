@@ -4,7 +4,7 @@
   "description": "znapp: An Ionic project",
   "dependencies": {
     "angularfire": "^1.2.0",
-    "cordova-android": "10.1.1",
+    "cordova-android": "10.1.2",
     "gulp": "^3.2.3",
     "gulp-concat": "2.2.0",
     "gulp-minify-css": "0.3.0",
@@ -39,6 +39,9 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-splashscreen": {}
-    }
+    },
+    "platforms": [
+      "android"
+    ]
   }
 }

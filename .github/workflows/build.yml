@@ -25,7 +25,7 @@ jobs:
       - name: setup ionic and cordova
         uses: coturiv/setup-ionic@v1.0.4
         with:
-          cordova-version: 8
+          cordova-version: 11
           ionic-version: 6
       - name: setup node
         uses: actions/setup-node@v1
