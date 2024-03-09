@@ -490,6 +490,8 @@ angular.module('starter.controllers', ['firebase'])
 
     const msg = isPaidOff ? paidOffMsg : delinquentMsg;
 
+    console.log(window.plugins);
+
      if(t == 'w')
          window.plugins.socialsharing
          .shareViaWhatsApp(msg, '', link);
