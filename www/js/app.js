@@ -32,26 +32,32 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   }
 
-  this.isInadimplenteByAluno = (aluno) => {    
+  this.isInadimplenteByAluno = (aluno) => {
     let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
-    let mensalidades = $firebaseArray(mensalidadesRef);
+    let mensalidades = $firebaseArray(mensalidadesRef).$loaded();
     let eventsRef = firebase.database().ref().child('events').orderByChild('aluno').equalTo(aluno.$id);
-    let events = $firebaseArray(eventsRef);
-    return mensalidades.$loaded().then((mensalidades) => self.isInadimplente(mensalidades, events, aluno.contratoVencimento));
+    let events = $firebaseArray(eventsRef).$loaded();
+
+    return Promise.all([mensalidades, events]).then((values) => {
+      const mensalidades = values[0];
+      const events = values[1];
+      return self.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+    });
   }
 
-  //verifica inadimplendia de uma unica mensalidade 
-  this.isInadimplenteByMonth = (mensalidade) =>  
+
+  //verifica inadimplendia de uma unica mensalidade
+  this.isInadimplenteByMonth = (mensalidade) =>
       (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())
 
   //se a mensalidade do aluno nao esta paga e é menor que o dia do vencimento
   //o aluno esta inadimplente
-  this.isInadimplente = (mensalidades, events, vencimento) => {    
-    let hasMensalidadesNaoPagas = mensalidades.filter((mensalidade) =>  
+  this.isInadimplente = (mensalidades, events, vencimento) => {
+    let hasMensalidadesNaoPagas = mensalidades.filter((mensalidade) =>
       (!mensalidade.pago) && (new Date(mensalidade.ano, mensalidade.mes, vencimento, 0, 0, 0, 0) < new Date())).length > 0
-      
-    let hasEventsNaoPagos = events.filter((event) => 
-      (!event.pago) && (new Date(event.dataInicio) < new Date())).length > 0       
+
+    let hasEventsNaoPagos = events.filter((event) =>
+      (!event.pago) && (new Date(event.dataInicio) < new Date())).length > 0
 
     if(hasEventsNaoPagos || hasMensalidadesNaoPagas)
       return true;
@@ -61,7 +67,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   this.isTodasMensalidadesPagas = (aluno) => {
     let mensalidadesRef = firebase.database().ref().child('mensalidades').orderByChild('aluno').equalTo(aluno.$id);
     let mensalidades = $firebaseArray(mensalidadesRef);
-    
+
     return mensalidades.$loaded().then(() => mensalidades.filter((mensalidade) => (!mensalidade.pago)).length == 0);
   }
 
@@ -93,7 +99,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     var per = mes.toString() + "/" + ano.toString();
 
     return per;
-  } 
+  }
 
   this.isInadimplente = function(mensalidades, done){
 
@@ -142,7 +148,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             break;
         default:
           mes ="Dezembro"
-      }      
+      }
       return mes;
 
     }

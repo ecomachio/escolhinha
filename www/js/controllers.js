@@ -29,9 +29,10 @@ angular.module('starter.controllers', ['firebase'])
 
     alunoService.loadAlunos().$loaded().then(function(alunos){
       $scope.alunos = alunos;
+      /*
       let mensalidadesRef = firebase.database().ref().child('mensalidades');
       let mensalidades = $firebaseArray(mensalidadesRef);
-      /*
+
       mensalidades.$loaded().then(function(m){
         m = m.filter((mensalidade) => {
           if(mensalidade.periodo != undefined){
@@ -48,18 +49,48 @@ angular.module('starter.controllers', ['firebase'])
       })
       */
 
-     // atualiza status de mesanlidades
-     alunos.filter((aluno) => {
-        console.log(aluno.nome, aluno.inadimplente, aluno.$id);
-        getAluno(aluno).then((a) => {
-          alunoService.isInadimplenteByAluno(a).then((isInadimplenteResolved) => {
-            a.inadimplente = isInadimplenteResolved;
-            a.$save();
-            $scope.alunos = alunos;
-            $ionicLoading.hide();
-          });
+    // for(let i = 0; i < alunos.length; i++){
+    //   let aluno = alunos[i];
+
+
+
+
+
+    //   // alunoService.isInadimplenteByAluno(aluno).then((isInadimplenteResolved) => {
+    //   //   console.log('pt2', aluno.nome, aluno.inadimplente, aluno.$id);
+    //   //   aluno.inadimplente = isInadimplenteResolved;
+    //   //   aluno.$save();
+    //   //   $ionicLoading.hide();
+    //   // });
+
+
+    // }
+      // save in the local storage the last time the data was updated
+
+      // check if the last update was more than 1 day ago
+      // if so, update the data
+      let lastUpdate = window.localStorage.getItem('lastUpdate') || 0;
+      let now = new Date().getTime();
+      let oneDay = 24*60*60*1000;
+
+      if(((lastUpdate == 0) || (now - lastUpdate) > oneDay)){
+        // atualiza status de mesanlidades
+        alunos.filter((aluno) => {
+          console.log(aluno.nome, aluno.inadimplente, aluno.$id);
+          getAluno(aluno).then((a) => {
+            alunoService.isInadimplenteByAluno(a).then((isInadimplenteResolved) => {
+              console.log('pt3', a.nome, a.inadimplente, a.$id, isInadimplenteResolved);
+              a.inadimplente = isInadimplenteResolved;
+              a.$save();
+              $scope.alunos = alunos;
+              window.localStorage.setItem('lastUpdate', new Date().getTime());
+              $ionicLoading.hide();
+            });
+          })
         })
-      })
+      } else {
+        $ionicLoading.hide();
+      }
     })
   }
 
@@ -697,14 +728,16 @@ angular.module('starter.controllers', ['firebase'])
     $scope.countInadimplentes = function(alunos){
 
       let mensalidadesRef = firebase.database().ref().child('mensalidades');
-      let mensalidades = $firebaseArray(mensalidadesRef);
+      let mensalidades = $firebaseArray(mensalidadesRef).$loaded()
       let eventsRef = firebase.database().ref().child('eventos');
-      let events = $firebaseArray(eventsRef);
+      let events = $firebaseArray(eventsRef).$loaded();
 
       $scope.inadimplentes = "...";
       $scope.inadimplentes = alunos.filter((aluno) => aluno.inadimplente).length;
       $scope.isLoading = true;
-      $q.all([mensalidades.$loaded(), events.$loaded()]).then((resolved) => {
+      console.log('pt1', alunos);
+      $q.all([mensalidades, events]).then((resolved) => {
+        console.log('pt2', alunos);
         $scope.overdueAmounts = parseFloat(alunos.reduce((amount, aluno) =>{
 
           let todasMensalidades = resolved[0];
