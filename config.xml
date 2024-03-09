@@ -81,4 +81,7 @@
     <allow-intent href="sms:*" />
     <allow-intent href="tel:*" />
     <allow-intent href="geo:*" />
+    <config-file parent="/manifest" target="AndroidManifest.xml" xmlns:android="http://schemas.android.com/apk/res/android">
+   <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+</config-file>
 </widget>
