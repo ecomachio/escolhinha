@@ -16,6 +16,8 @@
     "@ionic/v1-toolkit": "^3.2.3",
     "bower": "^1.8.14",
     "cordova-plugin-splashscreen": "^6.0.2",
+    "cordova-plugin-x-socialsharing": "^6.0.4",
+    "es6-promise-plugin": "^4.2.2",
     "gulp-util": "^2.2.20",
     "shelljs": "^0.8.5"
   },
@@ -38,7 +40,8 @@
   ],
   "cordova": {
     "plugins": {
-      "cordova-plugin-splashscreen": {}
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-x-socialsharing": {}
     },
     "platforms": [
       "android"

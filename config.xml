@@ -29,6 +29,9 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
+    <feature name="SocialSharing">
+  <param name="android-package" value="nl.xservices.plugins.SocialSharing" />
+</feature>
     <platform name="ios">
         <preference name="KeyboardDisplayRequiresUserAction" value="false" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
