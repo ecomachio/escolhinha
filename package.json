@@ -4,6 +4,7 @@
   "description": "znapp: An Ionic project",
   "dependencies": {
     "angularfire": "^1.2.0",
+    "community-cordova-plugin-social-sharing": "^6.2.1",
     "cordova-android": "10.1.2",
     "gulp": "^3.2.3",
     "gulp-concat": "2.2.0",
@@ -16,7 +17,6 @@
     "@ionic/v1-toolkit": "^3.2.3",
     "bower": "^1.8.14",
     "cordova-plugin-splashscreen": "^6.0.2",
-    "cordova-plugin-x-socialsharing": "^6.0.4",
     "es6-promise-plugin": "^4.2.2",
     "gulp-util": "^2.2.20",
     "shelljs": "^0.8.5"
@@ -41,7 +41,7 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-x-socialsharing": {}
+      "community-cordova-plugin-social-sharing": {}
     },
     "platforms": [
       "android"
