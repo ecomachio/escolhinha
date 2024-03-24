@@ -384,6 +384,8 @@ angular.module('starter.controllers', ['firebase'])
     $scope.modalEditKid.show();
   }
 
+  $scope.getAlunoClass = alunoService.getAlunoClass;
+
   $scope.openEvent = function(aluno){
     $scope.modalEvent.show();
   }
@@ -401,7 +403,7 @@ angular.module('starter.controllers', ['firebase'])
       let mensalidades = $scope.mensalidades;
 
       mensalidades.$save(mensalidade).then(() => {
-        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno);
         aluno.$save();
       }).catch((err) => console.log(err));
 
@@ -421,7 +423,7 @@ angular.module('starter.controllers', ['firebase'])
       let events = $scope.events;
 
       events.$save(event).then(() => {
-        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno.contratoVencimento);
+        aluno.inadimplente = alunoService.isInadimplente(mensalidades, events, aluno);
         aluno.$save();
       }).catch((err) => console.log(err));
 
@@ -437,10 +439,16 @@ angular.module('starter.controllers', ['firebase'])
     $rootScope.comprovante = comprovanteInfo;
     $rootScope.aluno = aluno;
 
+    let popupTittle;
+
+    if(aluno.inadimplente)
+      popupTittle = "Cobrança";
+    else popupTittle = "Comprovante";
+
     // An elaborate, custom popup
     var comprovantePopup = $ionicPopup.show({
       templateUrl: "templates/comprovantePopup.html",
-      title: 'Comprovante',
+      title: popupTittle,
       scope: $scope,
       buttons: [
         { text: 'Voltar' }
@@ -492,25 +500,23 @@ angular.module('starter.controllers', ['firebase'])
 
     console.log(window.plugins);
 
-     if(t == 'w')
-         window.plugins.socialsharing
-         .shareViaWhatsApp(msg, '', link);
-     else if(t == 'f')
-         window.plugins.socialsharing
-         .shareViaFacebook(msg, img, link);
-     else if(t == 't')
-         window.plugins.socialsharing
-         .shareViaTwitter(msg, img, link);
-     else if(t == 'sms')
-         window.plugins.socialsharing
-         .shareViaSMS(msg+' '+img+' '+link);
-     else
-     {
-         var sub = 'Comprovante Diprima';
-         window.plugins.socialsharing
-         .shareViaEmail(msg, sub, '');
-     }
+
+
+    if(t == 'w')
+      window.plugins.socialsharing.shareViaWhatsApp(msg, '', link);
+    else if(t == 'f')
+      window.plugins.socialsharing.shareViaFacebook(msg, img, link);
+    else if(t == 't')
+      window.plugins.socialsharing.shareViaTwitter(msg, img, link);
+    else if(t == 'sms')
+      window.plugins.socialsharing.shareViaSMS(msg+' '+img+' '+link);
+    else {
+      var sub = 'Comprovante Diprima';
+      window.plugins.socialsharing
+      .shareViaEmail(msg, sub, '');
+    }
   }
+
 
   $scope.gerarComprovante = function(mensalidade){
 
@@ -548,14 +554,13 @@ angular.module('starter.controllers', ['firebase'])
         aluno.contratoVencimento = parseInt(editAluno.contratoVencimento);
         aluno.telefone = editAluno.telefone;
         aluno.valorMensalidade = editAluno.valorMensalidade;
+        aluno.matriculaPausada = editAluno.matriculaPausada;
 
-        aluno.$save()
-        .then(function(){
-          $scope.aluno = aluno;
-          $scope.modalEditKid.hide();
-        })
-        .catch(function(err){
-          console.log("Erro ao alterar MSG", err);
+        aluno.$save().then(function(){
+            $scope.aluno = aluno;
+            $scope.modalEditKid.hide();
+        }).catch(function(err){
+           console.log("Erro ao alterar MSG", err);
         })
       })
     })
@@ -663,7 +668,6 @@ angular.module('starter.controllers', ['firebase'])
 })
 
 .controller('SettingsController', function($scope, $state) {
-
   $scope.signOut = function(){
     firebase.auth().signOut().then(function() {
       $state.go('login');
@@ -708,6 +712,7 @@ angular.module('starter.controllers', ['firebase'])
       return res.$loaded();
     }
 
+
     $scope.openKid = function(aluno){
 
       $scope.aluno = aluno;
@@ -734,8 +739,16 @@ angular.module('starter.controllers', ['firebase'])
       let eventsRef = firebase.database().ref().child('eventos');
       let events = $firebaseArray(eventsRef).$loaded();
 
+      //count alunos inadimplentes
       $scope.inadimplentes = "...";
       $scope.inadimplentes = alunos.filter((aluno) => aluno.inadimplente).length;
+      //count matriculas pausadas
+      $scope.pausados = "...";
+      $scope.pausados = alunos.filter((aluno) => aluno.matriculaPausada).length;
+      //count alunos adimplentes
+      $scope.adimplentes = "...";
+      $scope.adimplentes = alunos.filter((aluno) => !aluno.inadimplente).length;
+
       $scope.isLoading = true;
       console.log('pt1', alunos);
       $q.all([mensalidades, events]).then((resolved) => {
@@ -744,6 +757,9 @@ angular.module('starter.controllers', ['firebase'])
 
           let todasMensalidades = resolved[0];
           let todosEventos = resolved[1];
+
+          if(aluno.matriculaPausada)
+            return amount
 
           if(aluno.inadimplente){
 
@@ -797,6 +813,8 @@ angular.module('starter.controllers', ['firebase'])
         }, [])
       })
     }
+
+    $scope.getAlunoClass = alunoService.getAlunoClass;
 })
 
 .controller('FavoritosController', function($scope) {})

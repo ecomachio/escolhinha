@@ -43,6 +43,9 @@
               </label>
             </div>
           </div>
+          <ion-checkbox ng-model="editAluno.matriculaPausada" class="item-checkbox-right">
+            Matricula pausada
+          </ion-checkbox>          
         <a class="cardMargin button button-block button-assertive" ng-click="remove(editAluno)">Deletar Aluno</a>
         <a type="submit" ng-disabled="alunoForm.$invalid" class="cardMargin button button-block button-balanced" ng-click="save(editAluno)">Salvar</a>
       </form>

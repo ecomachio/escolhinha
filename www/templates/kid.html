@@ -1,6 +1,6 @@
 <ion-modal-view ng-controller="kidController">
   <ion-header-bar class="bar bar-header bar-balanced barCustom"
-                  ng-class="{ inadimHeaderClass: aluno.inadimplente }">
+                  ng-class="getAlunoClass(aluno, 'Header')">
     <button class="button button-clear button-top-left" ng-click="closeKid()">
         <i class="icon icon-left ion-android-arrow-back"></i>
     </button>
@@ -13,7 +13,7 @@
   </ion-header-bar>
   <ion-content>
       <div class="kidWrapper">
-        <div class="kidRegistrationData" ng-class="{ inadimClass: aluno.inadimplente }">
+        <div class="kidRegistrationData" ng-class="getAlunoClass(aluno)">
           <div class="mainKidRegistrationData">
             <img src="img\kidplaceholder.jpg">
             <h5>{{aluno.nome}}</h5>
